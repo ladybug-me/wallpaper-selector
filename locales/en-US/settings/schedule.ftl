@@ -1,0 +1,15 @@
+settings-schedule-schedule-card = Schedule
+settings-schedule-schedule-card-desc = Rules pick the wallpaper and theme from conditions like time, weekday, weather, power, and displays. The first matching rule wins.
+settings-schedule-enable-label = Enable schedule
+settings-schedule-enable-desc = Turn every schedule rule on or off without deleting the rules.
+settings-schedule-apply-on-start-label = Apply on startup
+settings-schedule-apply-on-start-desc = Apply the first matching rule when the service starts. A wallpaper picked manually this session still wins.
+settings-schedule-editor-label = Schedule editor
+settings-schedule-editor-desc = Build rules from condition blocks and drag to set priority; the first match wins. Legacy day and night settings become two rules on first open.
+settings-schedule-editor-action = Open
+settings-schedule-location-card = Location
+settings-schedule-location-card-desc = Used for sunrise/sunset times and for weather conditions.
+settings-schedule-latitude-label = Latitude
+settings-schedule-latitude-desc = Decimal degrees, north positive (e.g. 59.33).
+settings-schedule-longitude-label = Longitude
+settings-schedule-longitude-desc = Decimal degrees, east positive (e.g. 18.06).

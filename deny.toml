@@ -1,0 +1,71 @@
+[graph]
+targets = [
+    "x86_64-unknown-linux-gnu",
+    "aarch64-unknown-linux-gnu",
+]
+all-features = true
+
+[advisories]
+ignore = [
+    { id = "RUSTSEC-2026-0192", reason = "No maintained replacement is available through the pinned Iced and winit font stack; replacement is tracked as dependency debt." },
+]
+
+[licenses]
+allow = [
+    "0BSD",
+    "Apache-2.0",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "CC0-1.0",
+    "GPL-3.0-or-later",
+    "ISC",
+    "MIT",
+    "Unicode-3.0",
+    "Zlib",
+]
+confidence-threshold = 0.8
+
+[licenses.private]
+ignore = false
+
+[bans]
+multiple-versions = "deny"
+wildcards = "deny"
+allow-wildcard-paths = true
+highlight = "all"
+workspace-default-features = "allow"
+external-default-features = "allow"
+allow = []
+allow-workspace = true
+deny = []
+skip = [
+    { crate = "calloop@0.13.0", reason = "The pinned Iced and layershell stacks use adjacent Wayland generations." },
+    { crate = "calloop-wayland-source@0.3.0", reason = "The pinned Iced and layershell stacks use adjacent Wayland generations." },
+    { crate = "foldhash@0.1.5", reason = "The pinned wgpu graph spans adjacent hashbrown generations." },
+    { crate = "getrandom@0.3.4", reason = "The test and runtime dependency graphs use adjacent getrandom generations." },
+    { crate = "hashbrown@0.14.5", reason = "The pinned Iced and wgpu graphs require different hashbrown generations." },
+    { crate = "hashbrown@0.15.5", reason = "The pinned Iced and wgpu graphs require different hashbrown generations." },
+    { crate = "hashbrown@0.16.1", reason = "The pinned Iced and wgpu graphs require different hashbrown generations." },
+    { crate = "linux-raw-sys@0.4.15", reason = "The pinned Iced and layershell stacks use adjacent rustix generations." },
+    { crate = "rustc-hash@1.1.0", reason = "The current compiler and shader dependency graph uses both supported major versions." },
+    { crate = "rustix@0.38.44", reason = "The pinned Iced and layershell stacks use adjacent rustix generations." },
+    { crate = "smithay-client-toolkit@0.19.2", reason = "The pinned Iced and layershell stacks use adjacent Wayland generations." },
+    { crate = "smol_str@0.2.2", reason = "The pinned Iced and layershell stacks use adjacent string crate generations." },
+    { crate = "thiserror@1.0.69", reason = "The pinned Iced and layershell stacks span both supported thiserror majors." },
+    { crate = "thiserror-impl@1.0.69", reason = "The pinned Iced and layershell stacks span both supported thiserror majors." },
+]
+skip-tree = []
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]
+allow-git = [
+    "ssh://git@192.168.1.41:2222/liixini/skwd-iced-layershell.git",
+    "ssh://git@192.168.1.41:2222/liixini/skwd-iced-wgpu.git",
+]
+
+[sources.allow-org]
+github = []
+gitlab = []
+bitbucket = []

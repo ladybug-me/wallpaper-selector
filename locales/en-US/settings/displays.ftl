@@ -1,0 +1,10 @@
+settings-displays-card = Current wallpapers
+settings-displays-card-desc = These are the wallpapers currently reported by the wallpaper service. Changes made here apply to one display at a time.
+settings-displays-monitor-desc = { $width } × { $height } · { $kind }
+settings-displays-monitor-offline-desc = Offline · { $width } × { $height }
+settings-displays-placement-label = Placement
+settings-displays-placement-desc = Choose whether the wallpaper fills, fits, stretches, centres, tiles, or spans the display.
+settings-displays-lock-label = Lock
+settings-displays-lock-desc = Only update this monitor's wallpaper through the multipicker.
+settings-displays-empty-label = Detecting displays
+settings-displays-empty-desc = Current wallpapers will appear when the wallpaper service reports its displays.

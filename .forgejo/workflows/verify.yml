@@ -1,0 +1,169 @@
+name: forgejo-verify
+
+on:
+  push:
+    branches: [main]
+  pull_request: {}
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: forgejo-wall-verify-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Forgejo / Wall required
+    runs-on: skwd-wall-next-ci
+    timeout-minutes: 60
+    env:
+      CARGO_INCREMENTAL: "0"
+      CARGO_TERM_COLOR: always
+      RUST_BACKTRACE: "1"
+      SKWD_RUNNER_IMAGE: sha256:66058d5c15a5011188ee634bb909d730c279ab0d65408581b5d70e99a6970edb
+      SKWD_VERIFY_ROOT: ../skwd-verify
+    defaults:
+      run:
+        working-directory: suite/skwd-wall
+    steps:
+      - name: Check out Wall
+        uses: https://code.forgejo.org/actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          path: suite/skwd-wall
+          persist-credentials: false
+
+      - name: Check out Deck contracts
+        uses: https://code.forgejo.org/actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: liixini/skwd-deck
+          path: suite/skwd-deck
+          token: ${{ secrets.SKWD_SUITE_READ_TOKEN }}
+          persist-credentials: false
+
+      - name: Check out Lens contracts
+        uses: https://code.forgejo.org/actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: liixini/skwd-lens
+          path: suite/skwd-lens
+          token: ${{ secrets.SKWD_SUITE_READ_TOKEN }}
+          persist-credentials: false
+
+      - name: Check out iced_layershell fork
+        uses: https://code.forgejo.org/actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: liixini/skwd-iced-layershell
+          ref: 613b7ee30dc9315c2520eb922ac4e8fd7f103ea5
+          path: suite/forks/skwd-iced-layershell
+          token: ${{ secrets.SKWD_SUITE_READ_TOKEN }}
+          persist-credentials: false
+
+      - name: Check out iced_wgpu fork
+        uses: https://code.forgejo.org/actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: liixini/skwd-iced-wgpu
+          ref: 17e54c574652fb3406374cbc0bf1601b2fac3705
+          path: suite/forks/skwd-iced-wgpu
+          token: ${{ secrets.SKWD_SUITE_READ_TOKEN }}
+          persist-credentials: false
+
+      - name: Check out system verifier
+        uses: https://code.forgejo.org/actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: liixini/skwd-verify
+          ref: 046a0762c7a622d417246740b45cba67bcecd584
+          path: suite/skwd-verify
+          token: ${{ secrets.SKWD_SUITE_READ_TOKEN }}
+          persist-credentials: false
+
+      - name: Verify toolchain and isolation
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(rustc --version | awk '{print $2}')" = "1.94.1"
+          test ! -S /var/run/docker.sock
+          test ! -S /run/docker.sock
+          cargo --version
+          cargo clippy --version
+          cargo fmt --version
+
+      - name: Map immutable private forks into Cargo
+        shell: bash
+        run: |
+          set -euo pipefail
+          {
+            echo 'CARGO_NET_GIT_FETCH_WITH_CLI=true'
+            echo 'GIT_CONFIG_COUNT=2'
+            echo "GIT_CONFIG_KEY_0=url.file://${GITHUB_WORKSPACE}/suite/forks/skwd-iced-layershell.insteadOf"
+            echo 'GIT_CONFIG_VALUE_0=ssh://git@192.168.1.41:2222/liixini/skwd-iced-layershell.git'
+            echo "GIT_CONFIG_KEY_1=url.file://${GITHUB_WORKSPACE}/suite/forks/skwd-iced-wgpu.insteadOf"
+            echo 'GIT_CONFIG_VALUE_1=ssh://git@192.168.1.41:2222/liixini/skwd-iced-wgpu.git'
+          } >> "$GITHUB_ENV"
+
+      - name: Restore Cargo download cache
+        uses: https://code.forgejo.org/actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: |
+            /usr/local/cargo/registry
+            /usr/local/cargo/git
+          key: wall-cargo-${{ github.event_name }}-rust-1.94.1-${{ hashFiles('suite/skwd-wall/Cargo.lock') }}
+          restore-keys: |
+            wall-cargo-${{ github.event_name }}-rust-1.94.1-
+
+      - name: Create result directory
+        run: mkdir -p ci-artifacts/results
+
+      - name: Verify system-test repository
+        working-directory: suite/skwd-verify
+        continue-on-error: true
+        run: >-
+          python3 scripts/ci-report.py wrap
+          --suite verify.repository --target linux-x86_64
+          --expect-skips 0 --out ../skwd-wall/ci-artifacts/results/verify-repository.json
+          -- scripts/test-all.sh
+
+      - name: Format
+        continue-on-error: true
+        run: python3 "$SKWD_VERIFY_ROOT/scripts/ci-report.py" wrap --suite wall.format --target linux-x86_64 --expect-skips 0 --out ci-artifacts/results/wall-format.json -- cargo fmt --check
+
+      - name: Clippy
+        continue-on-error: true
+        run: python3 "$SKWD_VERIFY_ROOT/scripts/ci-report.py" wrap --suite wall.clippy --target linux-x86_64 --expect-skips 0 --out ci-artifacts/results/wall-clippy.json -- cargo clippy --locked --all-targets -- -D warnings
+
+      - name: Tests
+        continue-on-error: true
+        run: python3 "$SKWD_VERIFY_ROOT/scripts/ci-report.py" wrap --suite wall.tests --target linux-x86_64 --expect-skips 0 --out ci-artifacts/results/wall-tests.json -- cargo test --locked --release
+
+      - name: Allocation guards
+        continue-on-error: true
+        run: python3 "$SKWD_VERIFY_ROOT/scripts/ci-report.py" wrap --suite wall.allocations --target linux-x86_64 --expect-skips 0 --out ci-artifacts/results/wall-allocations.json -- cargo test --locked --release --features obs-heap alloc_free -- --test-threads=1
+
+      - name: Python tests
+        continue-on-error: true
+        run: python3 "$SKWD_VERIFY_ROOT/scripts/ci-report.py" wrap --suite wall.python --target linux-x86_64 --expect-skips 0 --out ci-artifacts/results/wall-python.json -- env PYTHONDONTWRITEBYTECODE=1 python3 "$SKWD_VERIFY_ROOT/scripts/python_suite.py"
+
+      - name: Unsafe inventory
+        continue-on-error: true
+        run: python3 "$SKWD_VERIFY_ROOT/scripts/ci-report.py" wrap --suite wall.unsafe --target linux-x86_64 --expect-skips 0 --out ci-artifacts/results/wall-unsafe.json -- "$SKWD_VERIFY_ROOT/scripts/check-unsafe-code.sh"
+
+      - name: Release build
+        continue-on-error: true
+        run: python3 "$SKWD_VERIFY_ROOT/scripts/ci-report.py" wrap --suite wall.release --target linux-x86_64 --expect-skips 0 --out ci-artifacts/results/wall-release.json -- cargo build --locked --release --package skwd-wall --bin skwd-wall
+
+      - name: Record exact execution provenance
+        if: always()
+        run: python3 "$SKWD_VERIFY_ROOT/scripts/ci-provenance.py" --out ci-artifacts/provenance.json --runner-image "$SKWD_RUNNER_IMAGE" --toolchains
+
+      - name: Aggregate required results
+        if: always()
+        run: python3 "$SKWD_VERIFY_ROOT/scripts/ci-report.py" aggregate --dir ci-artifacts/results --manifest scripts/ci-required-manifest.txt --strict-extra
+
+      - name: Retain reports and provenance
+        if: always()
+        uses: https://code.forgejo.org/actions/upload-artifact@c6a3b2bd78b3985e4b2f15397fec357f0fd808de
+        with:
+          name: wall-required-${{ github.sha }}
+          path: suite/skwd-wall/ci-artifacts
+          if-no-files-found: error
+          retention-days: 14

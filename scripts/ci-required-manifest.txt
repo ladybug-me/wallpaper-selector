@@ -1,0 +1,9 @@
+# Stable required Wall gate. Each entry must produce one schema-1 result.
+verify.repository
+wall.format
+wall.clippy
+wall.tests
+wall.allocations
+wall.python
+wall.unsafe
+wall.release

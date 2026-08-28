@@ -1,0 +1,21 @@
+#[derive(Debug, Clone)]
+pub enum ThemeMsg {
+    BackendMenu,
+    Option(&'static str, &'static str),
+    DesignClose,
+    RoleSelect(u8),
+    Hue(f32),
+    SV(f32, f32),
+    DragEnd,
+    HexInput(String),
+    HexSubmit,
+    Recent(String),
+    Preset(String),
+    SeedGen,
+    NameInput(String),
+    Reset,
+    SaveTheme,
+    SaveApply,
+    LoadSaved(String),
+    DeleteSaved(String),
+}

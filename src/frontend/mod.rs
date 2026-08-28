@@ -1,0 +1,16 @@
+pub mod animation;
+pub mod audio_panel;
+pub mod browser;
+pub mod components;
+pub mod effects;
+pub mod nav;
+pub mod playlists;
+pub mod scene;
+pub mod scene_properties;
+pub mod schedule_editor;
+pub mod settings;
+pub mod tagcloud;
+pub mod theme;
+pub mod theme_audition;
+pub mod theme_designer;
+pub mod ui;

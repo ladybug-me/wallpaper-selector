@@ -1,0 +1,12 @@
+settings-launch-launch-card = Uppstart
+settings-launch-launch-card-desc = Väljaren kallstartar på ~150 ms och avslutas helt när den stängs. Detta styr hur de millisekunderna ser ut.
+settings-launch-animation-label = Animation
+settings-launch-animation-desc = Ingen visar väljaren så snart den finns och är snabbast. Tona ändrar bara opacitet; Stig och Zooma lägger till rörelse.
+settings-launch-animation-none = Ingen
+settings-launch-animation-fade = Tona
+settings-launch-animation-rise = Stig
+settings-launch-animation-zoom = Zooma
+settings-launch-motion-label = Rörelse
+settings-launch-motion-desc = Väljarens delade UI-tempo. Ändra vikterna Snabb, Standard och Långsam i Rörelse-inställningarna.
+settings-launch-fade-from-label = Tona från
+settings-launch-fade-from-desc = Opacitet som entrén börjar från, i procent. 0 stiger från helt genomskinlig.

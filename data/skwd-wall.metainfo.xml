@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>org.skwd.wall</id>
+  <metadata_license>FSFAP</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  <name>skwd-wall</name>
+  <summary>GPU wallpaper picker</summary>
+  <developer id="io.github.liixini">
+    <name>liixini</name>
+  </developer>
+
+  <description>
+    <p>
+      A GPU-rendered picker for browsing and applying wallpapers, built as a
+      Wayland layer-shell surface so it draws over the desktop instead of in a
+      window.
+    </p>
+    <p>
+      Still images, video, and Wallpaper Engine scenes are applied through the
+      Skwd renderers, with a per-output fill mode and orientation for each
+      display. Applying a wallpaper can also retheme the desktop, deriving a
+      colour scheme from the image and handing it to matugen, wallust, pywal,
+      or a shell that reads Skwd's own palette.
+    </p>
+    <p>Browsing and organising:</p>
+    <ul>
+      <li>Four picker layouts, with filtering by tag, colour, and source</li>
+      <li>Semantic search over the library when Skwd Lens is installed</li>
+      <li>Scheduled and per-workspace wallpapers</li>
+      <li>Effects applied to a copy, previewed before anything is written</li>
+    </ul>
+  </description>
+
+  <launchable type="desktop-id">skwd-wall.desktop</launchable>
+  <provides>
+    <binary>skwd-wall</binary>
+  </provides>
+  <requires>
+    <display_length compare="ge">1024</display_length>
+  </requires>
+  <recommends>
+    <control>keyboard</control>
+    <control>pointing</control>
+  </recommends>
+
+  <categories>
+    <category>Graphics</category>
+  </categories>
+  <keywords>
+    <keyword>wallpaper</keyword>
+    <keyword>background</keyword>
+    <keyword>desktop</keyword>
+    <keyword>theme</keyword>
+  </keywords>
+
+  <url type="homepage">https://github.com/liixini/skwd-wall</url>
+  <url type="bugtracker">https://github.com/liixini/skwd-wall/issues</url>
+
+  <content_rating type="oars-1.1"/>
+
+  <releases>
+    <release version="0.1.0" date="2026-08-27"/>
+  </releases>
+</component>

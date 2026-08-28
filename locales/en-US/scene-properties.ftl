@@ -1,0 +1,10 @@
+scene-props-crumb = Wallpaper  /  Scene  /  Properties
+scene-props-count = { $editable } adjustable, { $changed } changed
+scene-props-reset = Restore defaults
+scene-props-loading = Reading the scene's properties…
+scene-props-empty = This scene does not publish any adjustable properties.
+scene-props-unsupported = Not adjustable here
+scene-props-changed = ••
+scene-props-default = Author's default: { $value }
+scene-props-on = On
+scene-props-off = Off

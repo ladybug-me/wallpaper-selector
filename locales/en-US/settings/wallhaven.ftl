@@ -1,0 +1,17 @@
+settings-wallhaven-grid-card = Grid
+settings-wallhaven-columns-label = Columns
+settings-wallhaven-columns-desc = Number of thumbnails per row.
+settings-wallhaven-rows-label = Rows
+settings-wallhaven-rows-desc = Number of rows visible at once.
+settings-wallhaven-thumb-card = Thumbnail
+settings-wallhaven-width-label = Width
+settings-wallhaven-width-desc = Thumbnail width in pixels.
+settings-wallhaven-height-label = Height
+settings-wallhaven-height-desc = Thumbnail height in pixels.
+settings-wallhaven-api-card = API
+settings-wallhaven-api-key-label = API key
+settings-wallhaven-api-key-desc = Enter a Wallhaven API key to access account features and NSFW results.
+settings-wallhaven-api-key-placeholder = Wallhaven API key (for NSFW)
+settings-wallhaven-username-label = Username
+settings-wallhaven-username-desc = Enter your Wallhaven username to browse and download from your collections.
+settings-wallhaven-username-placeholder = Wallhaven username

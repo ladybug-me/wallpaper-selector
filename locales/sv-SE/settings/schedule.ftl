@@ -1,0 +1,15 @@
+settings-schedule-schedule-card = Schema
+settings-schedule-schedule-card-desc = Regler väljer bakgrundsbild och tema utifrån villkor som tid, veckodag, väder, ström och skärmar. Första matchande regel vinner.
+settings-schedule-enable-label = Aktivera schema
+settings-schedule-enable-desc = Huvudströmbrytare för alla schemaregler.
+settings-schedule-apply-on-start-label = Använd vid uppstart
+settings-schedule-apply-on-start-desc = Tillämpa den första matchande regeln när tjänsten startar. En manuellt vald bakgrundsbild under sessionen vinner ändå.
+settings-schedule-editor-label = Schemaredigerare
+settings-schedule-editor-desc = Bygg regler av villkorsblock och dra för att sätta prioritet; första träffen vinner. Äldre dag- och nattinställningar blir två regler vid första öppningen.
+settings-schedule-editor-action = Öppna
+settings-schedule-location-card = Plats
+settings-schedule-location-card-desc = Används för soluppgångs- och solnedgångstider samt vädervillkor.
+settings-schedule-latitude-label = Latitud
+settings-schedule-latitude-desc = Decimalgrader, norr positivt (t.ex. 59.33).
+settings-schedule-longitude-label = Longitud
+settings-schedule-longitude-desc = Decimalgrader, öster positivt (t.ex. 18.06).

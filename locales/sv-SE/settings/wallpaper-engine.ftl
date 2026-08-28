@@ -1,0 +1,16 @@
+settings-wallpaper-engine-rendering-card = Rendering
+settings-wallpaper-engine-rendering-card-desc = Standardvärden som används när den inbyggda Vulkan-renderaren visar en Workshop-scen.
+settings-wallpaper-engine-fps-label = FPS-tak
+settings-wallpaper-engine-fps-desc = Högsta antal bildrutor per sekund. Lägre värden minskar CPU/GPU-belastningen.
+settings-wallpaper-engine-scaling-label = Standardskalning
+settings-wallpaper-engine-scaling-desc = Hur Workshop-scener passas in på varje skärm. Standard följer det globala fyllnadsläget.
+settings-wallpaper-engine-scaling-default = Global standard
+settings-wallpaper-engine-scaling-fill = Fyll
+settings-wallpaper-engine-scaling-fit = Anpassa
+settings-wallpaper-engine-scaling-stretch = Sträck
+settings-wallpaper-engine-scaling-center = Centrera
+settings-wallpaper-engine-scaling-tile = Upprepa
+settings-wallpaper-engine-scaling-span = Spänn över
+settings-wallpaper-engine-effects-card = Effekter
+settings-wallpaper-engine-particles-label = Stäng av partiklar
+settings-wallpaper-engine-particles-desc = Hoppa över partikeleffekter i scener som använder dem.

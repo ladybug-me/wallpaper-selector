@@ -1,0 +1,26 @@
+settings-niri-backdrop-card = Niri
+settings-niri-backdrop-card-desc = Show a separate copy of the wallpaper behind niri's overview (Mod+O). It can be blurred, dimmed, or recoloured independently.
+settings-niri-show-label = Show wallpaper in overview
+settings-niri-show-desc = Start the layer-shell wallpaper shown behind niri's overview. Turn this off to remove it completely.
+settings-niri-blur-label = Blur the backdrop
+settings-niri-blur-desc = Blur the overview copy while leaving the desktop wallpaper sharp.
+settings-niri-blur-radius-label = Blur radius
+settings-niri-blur-radius-desc = Gaussian blur radius applied to the copy. Higher is softer.
+settings-niri-follow-label = Always use the current wallpaper
+settings-niri-follow-desc = Track whatever wallpaper is applied. Turn off to pin a separate overview image below.
+settings-niri-image-label = Overview image
+settings-niri-image-desc = A fixed image for the overview backdrop, used when the toggle above is off. Leave empty to use the last wallpaper.
+settings-niri-auto-theme-label = Auto-theme the backdrop
+settings-niri-auto-theme-desc = Recolour the backdrop with a gowall theme palette.
+settings-niri-theme-label = Backdrop theme
+settings-niri-theme-desc = Palette used when auto-theming the backdrop.
+settings-niri-dim-label = Backdrop dimming
+settings-niri-dim-desc = Darken the overview backdrop. 0 = none, 100 = black.
+settings-niri-rule-label = Required niri layer-rule
+settings-niri-rule-desc = Paste this into your ~/.config/niri/config.kdl, then reload niri.
+settings-niri-refresh-label = Regenerate backdrop now
+settings-niri-refresh-desc = Re-blur the current wallpaper and respawn the backdrop renderer.
+settings-niri-refresh-action = Regenerate
+settings-niri-copy-label = Copy layer-rule to clipboard
+settings-niri-copy-desc = Copies the snippet above for niri's config.
+settings-niri-copy-action = Copy

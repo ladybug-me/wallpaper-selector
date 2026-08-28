@@ -1,0 +1,37 @@
+/target
+
+# profiling output
+/dhat-heap.json
+
+# mutants
+/mutants.out/
+/mutants.out.old/
+
+# runtime/library databases
+*.sqlite
+
+# packaging build artifacts (rebuilt by packaging scripts or CI)
+/packaging/*/out*/
+
+# nix build symlinks
+/result
+/result-*
+
+# profiling
+massif.out.*
+perf.data*
+
+/test-results*/
+__pycache__/
+
+# CI and release staging
+/artifacts/
+/dist/
+/*.cdx.json
+/*.lcov
+/clippy*.json
+/semgrep-*.json
+/cargo-geiger*.txt
+/semver-no-baseline.txt
+
+# analysis tool output

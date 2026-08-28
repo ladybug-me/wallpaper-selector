@@ -1,0 +1,36 @@
+status-daemon-version-mismatch = Daemon version mismatch: skwd-walld is { $daemon }, this app is { $gui }. Restart the daemon (pkill -x skwd-walld).
+status-daemon-connecting = Connecting to skwd-walld… If this does not clear, check ~/.cache/skwd-wall/skwd-walld.log.
+status-daemon-lost = Lost connection to skwd-walld. Retrying; check ~/.cache/skwd-wall/skwd-walld.log if it does not reconnect.
+status-library-empty = No wallpapers yet. Add images to { $directory }, or open the online browser.
+status-diagnostics-passed =
+    { $count ->
+        [one] Diagnostics: { $count } check passed
+       *[other] Diagnostics: all { $count } checks passed
+    }
+status-diagnostics-more = (+{ $count } more)
+status-diagnostics-issues =
+    Diagnostics: { $count } { $count ->
+        [one] issue
+       *[other] issues
+    } - { $issues }{ $more }
+status-apply-file-missing = Apply failed: wallpaper file is missing
+status-apply-renderer-failed = Apply failed: renderer could not start
+status-apply-decode-failed = Apply failed: could not decode the wallpaper
+status-apply-no-outputs = Apply failed: no matching output
+status-apply-invalid-request = Apply failed: invalid request
+status-apply-failed = Apply failed
+status-apply-detail = { $heading } ({ $detail })
+status-unsubscribe-failed = Deleted locally, but Steam could not unsubscribe. The item may download again while it remains subscribed.
+status-disk-full = The disk is full. Thumbnail import stopped; free some space and scan again.
+status-theme-failed = The theme update failed. The current colours were left unchanged.
+status-theme-backend-missing = { $requested } is not installed. The theme was generated with { $effective } instead.
+status-download-wallpaper = Downloading wallpaper
+status-effects-static-only = Effects only work on images.
+status-random-rotation-on = Random rotation is on.
+status-random-rotation-off = Random rotation is off.
+status-demo-playback-missing = Demo playback wallpaper is missing: { $key }
+status-demo-missing = Demo wallpaper is missing: { $key }
+status-demo-filtered = Demo wallpaper is filtered out: { $key }
+status-bug-report-saved = Bug report saved: { $path }
+status-bug-report-failed = Could not save the bug report. Check the log for the actual error.
+status-keybinds-reset = Controls restored to defaults.

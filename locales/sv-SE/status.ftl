@@ -1,0 +1,32 @@
+status-daemon-version-mismatch = Daemonversionerna skiljer sig: skwd-walld är { $daemon }, appen är { $gui }. Starta om daemonen (pkill -x skwd-walld).
+status-daemon-connecting = Ansluter till skwd-walld... om detta kvarstår, kontrollera ~/.cache/skwd-wall/skwd-walld.log
+status-daemon-lost = Tappade anslutningen till skwd-walld - försöker igen. Kontrollera ~/.cache/skwd-wall/skwd-walld.log
+status-library-empty = Inga bakgrundsbilder än - lägg bilder i { $directory }, eller öppna onlinebläddraren
+status-diagnostics-passed =
+    { $count ->
+        [one] Diagnostik: { $count } kontroll godkänd
+       *[other] Diagnostik: alla { $count } kontroller godkända
+    }
+status-diagnostics-more = (+{ $count } till)
+status-diagnostics-issues = Diagnostik: { $count } problem - { $issues }{ $more }
+status-apply-file-missing = Användningen misslyckades: bakgrundsfilen saknas
+status-apply-renderer-failed = Användningen misslyckades: renderaren kunde inte starta
+status-apply-decode-failed = Användningen misslyckades: bakgrundsbilden kunde inte avkodas
+status-apply-no-outputs = Användningen misslyckades: ingen matchande utgång
+status-apply-invalid-request = Användningen misslyckades: ogiltig begäran
+status-apply-failed = Användningen misslyckades
+status-apply-detail = { $heading } ({ $detail })
+status-unsubscribe-failed = Borttagen lokalt, men Steam-avprenumerationen misslyckades - ett prenumererat objekt kan laddas ner igen
+status-disk-full = Disken är full - miniatyrimporten är ofullständig; frigör utrymme och skanna om
+status-theme-failed = Temauppdateringen misslyckades - färgerna är oförändrade
+status-theme-backend-missing = { $requested } är inte installerat - temat sattes med { $effective }
+status-download-wallpaper = Laddar ner bakgrundsbild
+status-effects-static-only = Effekter fungerar bara på statiska bilder
+status-random-rotation-on = Slumpmässig rotation på
+status-random-rotation-off = Slumpmässig rotation av
+status-demo-playback-missing = Demons uppspelningsbakgrund saknas: { $key }
+status-demo-missing = Demobakgrunden saknas: { $key }
+status-demo-filtered = Demobakgrunden är bortfiltrerad: { $key }
+status-bug-report-saved = Felrapporten sparades: { $path }
+status-bug-report-failed = Felrapporten misslyckades - se loggen
+status-keybinds-reset = Kontrollerna återställdes till standard.

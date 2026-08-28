@@ -1,0 +1,9 @@
+help-shortcuts = GENVÄGAR
+help-keyboard = TANGENTBORD
+help-mouse = MUS
+help-key-esc = Esc
+help-mouse-wheel = hjul
+help-mouse-hover = hovra
+help-close-back-quit = stäng / tillbaka / avsluta
+help-wheel = bläddra / rulla
+help-hover = förhandsvisa videor

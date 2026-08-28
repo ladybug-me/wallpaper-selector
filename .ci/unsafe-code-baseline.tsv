@@ -1,0 +1,7 @@
+2	src/app/scene/core/tests.rs
+2	src/infrastructure/preview/decode/tests.rs
+1	src/infrastructure/preview/live_stream.rs
+1	src/infrastructure/semantic.rs
+2	src/main.rs
+5	src/shell/shell.rs
+3	src/shell/tests.rs

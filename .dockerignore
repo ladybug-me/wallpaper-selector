@@ -1,0 +1,7 @@
+target
+packaging/debian/out
+!packaging/debian/out/*.tar.xz
+packaging/fedora/out
+!packaging/fedora/out/*.rpm
+.git
+*.log

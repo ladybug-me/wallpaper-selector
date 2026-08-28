@@ -1,0 +1,21 @@
+settings-postprocessing-behaviour-card = Beteende
+settings-postprocessing-pick-only-label = Stäng av intern bakgrundstillämpning
+settings-postprocessing-pick-only-desc = När detta är på använder Skwd inte bakgrundsbilder själv. Använd efterbehandlingskommandona nedan för att driva din egen sättare.
+settings-postprocessing-on-restore-label = Kör vid uppstartsåterställning
+settings-postprocessing-on-restore-desc = Kör efterbehandlingskommandona igen när demonen återställer den senaste bakgrundsbilden vid uppstart.
+settings-postprocessing-commands-card = Kommandon
+settings-postprocessing-commands-card-desc =
+    Skalkommandon som körs efter varje bakgrundsbyte. Typknapparna filtrerar vilken bakgrundstyp som utlöser varje kommando (ALL = varje byte).
+    Platshållare: %path% (fil eller WE-mapp) %thumb% (alltid en bild) %type% (image/video/we) %name% (basnamn)
+settings-postprocessing-runs-for-label = Körs för
+settings-postprocessing-command-label = Kommando { $index }
+settings-postprocessing-command-placeholder = skalkommando
+settings-postprocessing-remove-desc = Ta bort detta kommando.
+settings-postprocessing-remove-action = Ta bort
+settings-postprocessing-add-label = Lägg till kommando
+settings-postprocessing-add-desc = Lägg till en ny tom kommandorad.
+settings-postprocessing-add-action = Lägg till
+settings-postprocessing-type-all = ALLA
+settings-postprocessing-type-image = BILD
+settings-postprocessing-type-video = VIDEO
+settings-postprocessing-type-we = WE

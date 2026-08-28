@@ -1,0 +1,9 @@
+settings-position-picker-card-desc = Position this picker style and its filter bar and search panel without affecting the others.
+settings-position-slices-card = Slices picker
+settings-position-hex-card = Geometric picker
+settings-position-wall-card = Wall picker
+settings-position-sandy-card = Sandy picker
+settings-position-horizontal-label = Horizontal offset
+settings-position-horizontal-desc = Move the picker left or right by a percentage of half the screen width. Positive values move it right.
+settings-position-vertical-label = Vertical offset
+settings-position-vertical-desc = Move the picker up or down by a percentage of half the screen height. Positive values move it down.

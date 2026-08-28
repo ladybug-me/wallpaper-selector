@@ -1,0 +1,16 @@
+settings-wallpaper-engine-rendering-card = Rendering
+settings-wallpaper-engine-rendering-card-desc = Set the defaults used when the built-in Vulkan renderer displays a Workshop scene.
+settings-wallpaper-engine-fps-label = FPS cap
+settings-wallpaper-engine-fps-desc = Maximum frames per second. Lower values reduce CPU/GPU load.
+settings-wallpaper-engine-scaling-label = Default scaling
+settings-wallpaper-engine-scaling-desc = How Workshop scenes fit each monitor. Default follows the global fill mode.
+settings-wallpaper-engine-scaling-default = Global default
+settings-wallpaper-engine-scaling-fill = Fill
+settings-wallpaper-engine-scaling-fit = Fit
+settings-wallpaper-engine-scaling-stretch = Stretch
+settings-wallpaper-engine-scaling-center = Centre
+settings-wallpaper-engine-scaling-tile = Tile
+settings-wallpaper-engine-scaling-span = Span
+settings-wallpaper-engine-effects-card = Effects
+settings-wallpaper-engine-particles-label = Disable particles
+settings-wallpaper-engine-particles-desc = Skip particle layers in scenes that use them. This can reduce GPU work, but those scenes will lose part of their animation.

@@ -1,0 +1,12 @@
+settings-launch-launch-card = Launch
+settings-launch-launch-card-desc = The picker starts in about 150 ms and exits completely when closed. These settings only change how it appears during startup.
+settings-launch-animation-label = Animation
+settings-launch-animation-desc = None shows the picker as soon as it exists and is fastest. Fade changes opacity only; Rise and Zoom add movement.
+settings-launch-animation-none = None
+settings-launch-animation-fade = Fade
+settings-launch-animation-rise = Rise
+settings-launch-animation-zoom = Zoom
+settings-launch-motion-label = Motion
+settings-launch-motion-desc = The shared picker UI pace. Change the Fast, Standard, and Slow weights in Motion settings.
+settings-launch-fade-from-label = Fade from
+settings-launch-fade-from-desc = Opacity the entrance starts from, in percent. 0 rises from fully transparent.

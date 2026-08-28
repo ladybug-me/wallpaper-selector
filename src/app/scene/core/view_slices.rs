@@ -1,0 +1,266 @@
+use std::collections::HashSet;
+
+use crate::frontend::scene::layout;
+use crate::frontend::scene::{
+    InstanceRaw, card_flip_phases, card_flip_shader_payload, roll_in_cut,
+};
+use crate::infrastructure::preview::is_webp;
+
+use super::atlas_helpers::{enqueue_far, enqueue_near};
+use super::layout_helpers::{CardSpec, STORM_CUTOFF, TOP_BAR, prefetch_reach};
+use super::model::{RebuildCtx, RebuildSinks, SceneCore};
+
+impl SceneCore {
+    pub(super) fn rebuild_slices(
+        &mut self,
+        ctx: &mut RebuildCtx<'_>,
+        sinks: &mut RebuildSinks<'_>,
+        entrance: f32,
+    ) {
+        let (vw, vh) = self.viewport;
+        let sp = self.sp;
+        let count = ctx.filtered.len();
+        let strip_w = (sp.layout_width(sp.expanded_w)
+            + (sp.visible_count.saturating_sub(1)) as f32 * sp.slice_stride())
+        .min(self.avail_w() - 40.0);
+        let half_view = strip_w / 2.0;
+        let cx = self.center_x() + sp.offset_x * vw * 0.5;
+        let cy = vh * 0.5 + sp.offset_y * vh * 0.5;
+
+        let card_h = sp.slice_h + TOP_BAR + 60.0;
+
+        if count == 0 {
+            return;
+        }
+        self.current = self.current.min(count - 1);
+
+        let mut centers = Vec::with_capacity(count);
+        let mut acc = 0.0f32;
+        let mut tacc = 0.0f32;
+        let mut target_center = 0.0f32;
+        for idx in 0..count {
+            let layout_w = sp.layout_width(self.width_of(idx));
+            centers.push(acc + layout_w * 0.5);
+            acc += layout_w + sp.spacing;
+
+            let target_layout_w = sp.layout_width(self.target_width_of(idx));
+            if idx == self.current {
+                target_center = tacc + target_layout_w * 0.5;
+            }
+            tacc += target_layout_w + sp.spacing;
+        }
+
+        self.camera.set_zeta(if sp.wobble { 0.45 } else { 1.0 });
+        self.position_slice_camera(target_center);
+        let cam = self.camera.x;
+        let bend = layout::wobble_bend(self.camera.v, sp.expanded_w);
+
+        let top = cy - card_h * 0.5 + TOP_BAR + 15.0;
+        let item_cy = top + sp.slice_h * 0.5;
+        let margin = sp.expanded_w;
+
+        let mut visible: Vec<usize> = (0..count)
+            .filter(|&idx| {
+                let half_w = self.width_of(idx) * 0.5;
+                let x0 = centers[idx] - half_w - (cam - half_view);
+                let x1 = centers[idx] + half_w - (cam - half_view);
+                x1 >= -margin && x0 <= strip_w + margin
+            })
+            .collect();
+        self.vis_lo = visible.iter().copied().min().unwrap_or(self.current);
+        self.vis_hi = visible.iter().copied().max().unwrap_or(self.current);
+        self.slice_order(&mut visible);
+
+        self.card.filter_cache.clear();
+        for &idx in &visible {
+            let w = self.width_of(idx);
+            let item_cx = cx - cam + centers[idx];
+            let opacity = layout::slice_opacity(
+                item_cx,
+                cx,
+                half_view,
+                sp.layout_width(sp.expanded_w),
+                sp.slice_stride(),
+            ) * entrance;
+            if opacity <= 0.01 {
+                continue;
+            }
+            self.slice_card(ctx, sinks, idx, w, item_cx, item_cy, opacity, half_view, bend);
+        }
+        self.push_flip_old(sinks.instances, sinks.wanted);
+    }
+
+    pub(super) fn position_slice_camera(&mut self, cur_center: f32) {
+        if self.layout_camera_anchor || !self.sp.settled_to(&self.sp_target) {
+            self.camera.snap(cur_center);
+            self.layout_camera_anchor = false;
+        } else {
+            self.camera.retarget(cur_center);
+        }
+    }
+
+    fn slice_order(&self, visible: &mut [usize]) {
+        visible.sort_by_key(|&idx| {
+            if idx == self.current {
+                i64::MAX
+            } else if Some(idx) == self.hover {
+                i64::MAX - 1
+            } else {
+                -(idx as i64 - self.current as i64).abs()
+            }
+        });
+    }
+
+    fn slice_card(
+        &mut self,
+        ctx: &mut RebuildCtx<'_>,
+        sinks: &mut RebuildSinks<'_>,
+        idx: usize,
+        w: f32,
+        item_cx: f32,
+        item_cy: f32,
+        opacity: f32,
+        half_view: f32,
+        bend: f32,
+    ) {
+        let sp = self.sp;
+        let cx = self.center_x() + sp.offset_x * self.viewport.0 * 0.5;
+        let store_idx = ctx.filtered[idx] as usize;
+        let is_current = idx == self.current;
+        let is_hover = Some(idx) == self.hover;
+        let roll = self.flip_roll_for(store_idx, item_cx, item_cy);
+        let radii = layout::slice_clamped_corners(sp.corners, w, sp.slice_h, sp.skew);
+        let (sh_x, sh_y, sh_a) = if is_current { (4.0, 10.0, 0.5) } else { (2.0, 5.0, 0.3) };
+        sinks.instances.push(InstanceRaw {
+            rect: [item_cx + sh_x, item_cy + sh_y, w * 0.5, sp.slice_h * 0.5],
+            radii,
+            fill: [0.0, 0.0, 0.0, sh_a],
+            params: [sp.skew, 0.0, opacity * roll, 0.0],
+            ..Default::default()
+        });
+        let chrome_op = if self.card.flipped == Some(idx) {
+            opacity * (1.0 - self.card.flip.x).clamp(0.0, 1.0)
+        } else {
+            opacity
+        };
+        let (mut body, hit) = self.place_card(
+            ctx,
+            sinks.wanted,
+            sinks.chrome,
+            &CardSpec {
+                filtered_idx: idx,
+                store_idx,
+                cx: item_cx,
+                cy: item_cy,
+                hw: w * 0.5,
+                hh: sp.slice_h * 0.5,
+                skew: sp.skew,
+                radii,
+                hex: false,
+                view: 0,
+                chrome_radius: radii[0],
+                opacity,
+                chrome_opacity: chrome_op * roll,
+                body_inset: 0.0,
+                near_ok: true,
+            },
+        );
+        if self.card.flipped == Some(idx) {
+            let phases = card_flip_phases(
+                self.card.flip.x,
+                self.card.flip_shader_enabled,
+                self.card.flip_back_enabled,
+            );
+            body.flip = card_flip_shader_payload(phases.shader, idx, self.card.flip_effect);
+            let progress = self.card.flip.x;
+            self.card.pending_back = Some(self.make_back_panel(
+                ctx,
+                store_idx,
+                item_cx,
+                item_cy,
+                w * 0.5,
+                sp.slice_h * 0.5,
+                sp.skew,
+                radii,
+                progress,
+            ));
+        }
+        let sel = self
+            .card
+            .selection
+            .get(&idx)
+            .map_or(if is_current { 1.0 } else { 0.0 }, |spr| spr.x.clamp(0.0, 1.0));
+        let prim = ctx.palette.primary;
+        let (base_border, base_dim) = if is_hover {
+            ([prim.r, prim.g, prim.b, 0.4], 0.15)
+        } else {
+            ([0.0, 0.0, 0.0, 0.6], 0.4)
+        };
+        let cur_border = [prim.r, prim.g, prim.b, 1.0];
+        body.border = [
+            base_border[0] + (cur_border[0] - base_border[0]) * sel,
+            base_border[1] + (cur_border[1] - base_border[1]) * sel,
+            base_border[2] + (cur_border[2] - base_border[2]) * sel,
+            base_border[3] + (cur_border[3] - base_border[3]) * sel,
+        ];
+        body.params[1] = 1.0 + 2.0 * sel;
+        body.tint = [0.0, 0.0, 0.0, base_dim * (1.0 - sel)];
+        if sp.wobble && self.card.flipped != Some(idx) {
+            let pad = layout::wobble_pad(sp.wobble_strength);
+            body.rect[2] *= pad;
+            body.rect[3] *= pad;
+            body.flip[2] = pad;
+            body.misc[3] |= 32;
+            body.flip[3] = bend * sp.wobble_strength;
+            body.flip[1] = ((item_cx - cx) / half_view.max(1.0)).clamp(-1.0, 1.0) * 0.5;
+        }
+        self.card.filter_cache.push((body, store_idx as u32, roll));
+        roll_in_cut(&mut body, roll);
+        sinks.instances.push(body);
+        sinks.hits.push(hit);
+    }
+
+    pub(super) fn prefetch_ring(
+        &mut self,
+        ctx: &mut RebuildCtx<'_>,
+        wanted: &mut HashSet<usize>,
+        count: usize,
+    ) {
+        if count == 0 || self.scroll_vel > STORM_CUTOFF {
+            return;
+        }
+        let Some(atlas) = ctx.atlas.as_mut() else { return };
+        let span = self.vis_hi.saturating_sub(self.vis_lo) + 1;
+        let (far_look, near_look) = if crate::contracts::preview::compressed_thumbnails() {
+            prefetch_reach(span, atlas.near_capacity() as usize)
+        } else {
+            (prefetch_reach(span, 0).0, 0)
+        };
+        for step in 1..=far_look {
+            for idx in [
+                self.vis_lo.checked_sub(step),
+                Some(self.vis_hi + step).filter(|&cand| cand < count),
+            ]
+            .into_iter()
+            .flatten()
+            {
+                let store_idx = ctx.filtered[idx] as usize;
+                let item = &ctx.catalog.items[store_idx];
+                wanted.insert(store_idx);
+                if step <= near_look
+                    && !atlas.near.is_known(store_idx)
+                    && !atlas.near_failed.contains(&store_idx)
+                    && is_webp(&item.thumb)
+                {
+                    enqueue_near(ctx.pool, atlas, item, store_idx, false, self.direct_thumbnails);
+                }
+                if !atlas.far.is_known(store_idx)
+                    && !atlas.failed.contains(&store_idx)
+                    && is_webp(&item.thumb)
+                {
+                    enqueue_far(ctx.pool, atlas, item, store_idx, false, self.direct_thumbnails);
+                }
+            }
+        }
+    }
+}

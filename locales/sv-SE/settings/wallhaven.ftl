@@ -1,0 +1,17 @@
+settings-wallhaven-grid-card = Rutnät
+settings-wallhaven-columns-label = Kolumner
+settings-wallhaven-columns-desc = Antal miniatyrer per rad.
+settings-wallhaven-rows-label = Rader
+settings-wallhaven-rows-desc = Antal rader synliga samtidigt.
+settings-wallhaven-thumb-card = Miniatyr
+settings-wallhaven-width-label = Bredd
+settings-wallhaven-width-desc = Miniatyrens bredd i pixlar.
+settings-wallhaven-height-label = Höjd
+settings-wallhaven-height-desc = Miniatyrens höjd i pixlar.
+settings-wallhaven-api-card = API
+settings-wallhaven-api-key-label = API-nyckel
+settings-wallhaven-api-key-desc = Wallhaven-API-nyckel (krävs för NSFW-innehåll).
+settings-wallhaven-api-key-placeholder = Wallhaven-API-nyckel (för NSFW)
+settings-wallhaven-username-label = Användarnamn
+settings-wallhaven-username-desc = Ditt Wallhaven-användarnamn - låter bläddraren lista och hämta från dina samlingar.
+settings-wallhaven-username-placeholder = Wallhaven-användarnamn

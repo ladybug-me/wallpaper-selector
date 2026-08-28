@@ -1,0 +1,9 @@
+help-shortcuts = Shortcuts
+help-keyboard = Keyboard
+help-mouse = Mouse
+help-key-esc = Esc
+help-mouse-wheel = Wheel
+help-mouse-hover = Hover
+help-close-back-quit = Close / back / quit
+help-wheel = Browse / scroll
+help-hover = Preview videos

@@ -1,0 +1,9 @@
+settings-position-picker-card-desc = Placera den här väljarstilen samt dess filterrad och sökpanel utan att påverka de andra.
+settings-position-slices-card = Slices-väljare
+settings-position-hex-card = Geometric-väljare
+settings-position-wall-card = Wall-väljare
+settings-position-sandy-card = Sandy-väljare
+settings-position-horizontal-label = Horisontell förskjutning
+settings-position-horizontal-desc = Flytta väljaren åt vänster eller höger med en procentandel av halva skärmbredden. Positiva värden flyttar den åt höger.
+settings-position-vertical-label = Vertikal förskjutning
+settings-position-vertical-desc = Flytta väljaren uppåt eller nedåt med en procentandel av halva skärmhöjden. Positiva värden flyttar den nedåt.

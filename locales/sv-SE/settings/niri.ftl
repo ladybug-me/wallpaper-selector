@@ -1,0 +1,26 @@
+settings-niri-backdrop-card = Niri
+settings-niri-backdrop-card-desc = Visa en separat kopia av bakgrundsbilden bakom niris översikt (Mod+O). Den kan suddas, dämpas eller färgas om oberoende.
+settings-niri-show-label = Visa bakgrundsbilden i översikten
+settings-niri-show-desc = Servera en kopia av bakgrundsbilden som en layer-shell-yta för niris översiktsfond.
+settings-niri-blur-label = Sudda fonden
+settings-niri-blur-desc = Lägg en gaussisk oskärpa på översiktsfonden.
+settings-niri-blur-radius-label = Oskärperadie
+settings-niri-blur-radius-desc = Gaussisk oskärperadie som läggs på kopian. Högre är mjukare.
+settings-niri-follow-label = Använd alltid aktuell bakgrundsbild
+settings-niri-follow-desc = Följ den bakgrundsbild som används. Stäng av för att fästa en separat översiktsbild nedan.
+settings-niri-image-label = Översiktsbild
+settings-niri-image-desc = En fast bild för översiktsfonden, som används när växeln ovan är av. Lämna tomt för att använda senaste bakgrundsbilden.
+settings-niri-auto-theme-label = Temafärga fonden automatiskt
+settings-niri-auto-theme-desc = Färga om fonden med en gowall-temapalett.
+settings-niri-theme-label = Fondtema
+settings-niri-theme-desc = Palett som används när fonden temafärgas automatiskt.
+settings-niri-dim-label = Fonddämpning
+settings-niri-dim-desc = Mörklägg översiktsfonden. 0 = inget, 100 = svart.
+settings-niri-rule-label = Nödvändig niri layer-rule
+settings-niri-rule-desc = Klistra in detta i din ~/.config/niri/config.kdl och läs sedan om niri.
+settings-niri-refresh-label = Generera om fonden nu
+settings-niri-refresh-desc = Sudda om den aktuella bakgrundsbilden och starta om fondrenderaren.
+settings-niri-refresh-action = Generera om
+settings-niri-copy-label = Kopiera layer-rule till urklipp
+settings-niri-copy-desc = Kopierar snutten ovan för niris konfiguration.
+settings-niri-copy-action = Kopiera
