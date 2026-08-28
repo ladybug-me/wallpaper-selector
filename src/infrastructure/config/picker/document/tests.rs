@@ -5,26 +5,6 @@ use super::secure_config_file;
 use serde_json::json;
 
 #[test]
-fn retained_picker_config_fixture_loads_and_saves_canonically() {
-    let fixture: serde_json::Value = serde_json::from_str(include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/compatibility/fixtures/config-retired-picker-fields-v0.json"
-    )))
-    .unwrap();
-    let dir = tempfile::tempdir().unwrap();
-    let path = dir.path().join("config.json");
-    let mut config = Config::from_data(fixture["input"].clone());
-    config.config_path = path.clone();
-
-    assert_eq!(config.root(), &fixture["canonical"]);
-    config.persist();
-
-    let saved: serde_json::Value =
-        serde_json::from_str(&std::fs::read_to_string(path).unwrap()).unwrap();
-    assert_eq!(saved, fixture["canonical"]);
-}
-
-#[test]
 fn secure_private_noop() {
     let dir = tempfile::tempdir().unwrap();
     let path = dir.path().join("config.json");
@@ -123,40 +103,4 @@ fn awww_engine_kept() {
     let saved: serde_json::Value =
         serde_json::from_str(&std::fs::read_to_string(path).unwrap()).unwrap();
     assert_eq!(saved["paper"]["engine"], "awww");
-}
-
-#[test]
-fn video_optimize_retired() {
-    let dir = tempfile::tempdir().unwrap();
-    let path = dir.path().join("config.json");
-    let mut config = Config::from_data(json!({
-        "videoOptimize": {"enabled": true, "codec": "av1", "maxHeight": 1440},
-        "paper": {"videoEngine": "tinier"}
-    }));
-    config.config_path = path.clone();
-
-    config.persist();
-
-    let saved: serde_json::Value =
-        serde_json::from_str(&std::fs::read_to_string(path).unwrap()).unwrap();
-    assert!(saved.get("videoOptimize").is_none());
-    assert_eq!(saved["paper"]["videoEngine"], "tinier");
-}
-
-#[test]
-fn preview_mode_retired() {
-    let dir = tempfile::tempdir().unwrap();
-    let path = dir.path().join("config.json");
-    let mut config = Config::from_data(json!({
-        "videoPreview": {"enabled": false, "mode": "loop", "delayMs": 500}
-    }));
-    config.config_path = path.clone();
-
-    config.persist();
-
-    let saved: serde_json::Value =
-        serde_json::from_str(&std::fs::read_to_string(path).unwrap()).unwrap();
-    assert!(saved["videoPreview"].get("mode").is_none());
-    assert_eq!(saved["videoPreview"]["enabled"], false);
-    assert_eq!(saved["videoPreview"]["delayMs"], 500);
 }

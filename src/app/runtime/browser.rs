@@ -17,9 +17,7 @@ impl App {
             self.source_browser.wall.scene.reset_to_start(0);
         }
         let Some((source, generation, mut call)) = (|| {
-            let Some(browser) = self.source_browser.browser.as_mut() else {
-                return None;
-            };
+            let browser = self.source_browser.browser.as_mut()?;
             if !append {
                 browser.session.search_generation =
                     browser.session.search_generation.saturating_add(1);

@@ -444,15 +444,6 @@ impl Config {
 }
 
 fn canonicalize_picker_config(data: &mut Value) {
-    if let Some(root) = data.as_object_mut() {
-        root.remove("videoOptimize");
-        if let Some(general) = root.get_mut("general").and_then(Value::as_object_mut) {
-            general.remove("settingsStyle");
-        }
-        if let Some(preview) = root.get_mut("videoPreview").and_then(Value::as_object_mut) {
-            preview.remove("mode");
-        }
-    }
     skwd_config::canonicalize_paper_engine(data);
     skwd_config::canonicalize_we_renderer(data);
     canonicalize_resolution_presets(data);

@@ -103,7 +103,7 @@ pub(crate) fn build_tab_with_runtime_status(
     previews: &std::collections::HashMap<String, String>,
     library_watch: Option<&crate::contracts::daemon::LibraryWatchStatus>,
 ) -> Vec<(Card, Vec<Row>)> {
-    match crate::frontend::settings::canonical_category(tab) {
+    match tab {
         "picker" => compose_picker(cfg, themes, outputs),
         "filter" => compose_filter_bar(cfg, folders),
         "position" => compose_position(cfg),

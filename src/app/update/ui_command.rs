@@ -243,7 +243,7 @@ pub(super) fn run_ui_command(app: &mut App, cmd: &str) -> Task<Message> {
         "tab"
             if crate::frontend::settings::visible_tabs(&app.config)
                 .iter()
-                .any(|(key, _)| *key == crate::frontend::settings::canonical_category(&arg)) =>
+                .any(|(key, _)| *key == arg) =>
         {
             if app.panels.settings.open {
                 return super::update_inner(app, Message::SetSettingsTab(arg));

@@ -244,19 +244,19 @@ fn apply_error_messages() {
 
 #[test]
 fn scene_visibility_tabs() {
-    let (dm, hidden) = scene_visibility(false, "selector", 1, false);
+    let (dm, hidden) = scene_visibility(false, "picker", 1, false);
     assert!(!dm && !hidden);
 
-    let (dm, hidden) = scene_visibility(true, "selector", 1, false);
+    let (dm, hidden) = scene_visibility(true, "picker", 1, false);
     assert!(dm && !hidden);
 
-    let (dm, hidden) = scene_visibility(true, "selector", 0, false);
+    let (dm, hidden) = scene_visibility(true, "picker", 0, false);
     assert!(!dm && hidden);
 
-    let (dm, hidden) = scene_visibility(true, "paper", 1, false);
+    let (dm, hidden) = scene_visibility(true, "playback", 1, false);
     assert!(!dm && hidden);
 
-    let (dm, hidden) = scene_visibility(true, "selector", 1, true);
+    let (dm, hidden) = scene_visibility(true, "picker", 1, true);
     assert!(!dm && hidden);
 }
 

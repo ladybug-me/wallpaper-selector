@@ -1,25 +1,6 @@
 use super::*;
 
 #[test]
-fn retained_settings_category_fixture_resolves_canonically() {
-    let fixture: Value = serde_json::from_str(include_str!(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/compatibility/fixtures/identifier-settings-category-v0.json"
-    )))
-    .unwrap();
-    for row in fixture["input"].as_array().unwrap() {
-        let legacy = row["legacy"].as_str().unwrap();
-        let canonical = row["canonical"].as_str().unwrap();
-        assert_eq!(crate::frontend::settings::canonical_category(legacy), canonical, "{legacy}");
-        assert_eq!(
-            crate::frontend::settings::canonical_category(canonical),
-            canonical,
-            "{canonical}"
-        );
-    }
-}
-
-#[test]
 fn settings_reload_sees_persisted() {
     let directory = tempfile::tempdir().unwrap();
     let config_path = directory.path().join("config.json");
@@ -352,23 +333,23 @@ fn layout_studio_inset_while_live() {
     assert_eq!(app.panels.settings.control_page, 0);
     assert_eq!(app.panels.settings.section_anim.x, 0.0);
 
-    let _ = update(&mut app, Message::SetSettingsTab(String::from("general")));
+    let _ = update(&mut app, Message::SetSettingsTab(String::from("picker")));
     assert_eq!(app.panels.settings.tab, "picker");
     assert_eq!(app.panels.settings.section, 0);
     assert_eq!(app.panels.settings.control_page, 0);
     assert_eq!(app.panels.settings.inset_target, 0.0);
 
-    let _ = update(&mut app, Message::SetSettingsTab(String::from("tagging")));
+    let _ = update(&mut app, Message::SetSettingsTab(String::from("search")));
     assert_eq!(app.panels.settings.tab, "search");
     assert_eq!(app.panels.settings.inset_target, 0.0);
     assert_eq!(app.panels.settings.section_anim.x, 0.0);
 
-    let _ = update(&mut app, Message::SetSettingsTab(String::from("transitions")));
+    let _ = update(&mut app, Message::SetSettingsTab(String::from("motion")));
     assert_eq!(app.panels.settings.tab, "motion");
     assert_eq!(app.panels.settings.inset_target, 0.0);
     assert_eq!(app.panels.settings.section_anim.x, 0.0);
 
-    let _ = update(&mut app, Message::SetSettingsTab(String::from("selector")));
+    let _ = update(&mut app, Message::SetSettingsTab(String::from("picker")));
     assert_eq!(app.panels.settings.tab, "picker");
     assert_eq!(app.panels.settings.inset_target, 0.0);
 }
@@ -451,7 +432,7 @@ fn workbench_keyboard_navigation() {
     let mut app = test_app();
     app.scene.viewport = (1536.0, 960.0);
     let _ = update(&mut app, Message::ToggleSettings);
-    let _ = update(&mut app, Message::SetSettingsTab(String::from("general")));
+    let _ = update(&mut app, Message::SetSettingsTab(String::from("picker")));
     assert_eq!(app.panels.settings.focus, SettingsFocus::Sections);
     assert_eq!(app.panels.settings.section, 0);
 
@@ -591,7 +572,7 @@ fn workbench_ctrl_tab_cycles_pages() {
 
     let mut app = test_app();
     let _ = update(&mut app, Message::ToggleSettings);
-    let _ = update(&mut app, Message::SetSettingsTab(String::from("general")));
+    let _ = update(&mut app, Message::SetSettingsTab(String::from("picker")));
     let _ = update(
         &mut app,
         Message::Settings(SettingsMsg::Key(SettingsKey::CategoryNext { backwards: false })),
@@ -711,7 +692,7 @@ fn workbench_enter_commits_escape_restores() {
     let mut app = test_app();
     app.scene.viewport = (1536.0, 960.0);
     let _ = update(&mut app, Message::ToggleSettings);
-    let _ = update(&mut app, Message::SetSettingsTab(String::from("general")));
+    let _ = update(&mut app, Message::SetSettingsTab(String::from("picker")));
     let _ = update(
         &mut app,
         Message::Settings(SettingsMsg::Key(SettingsKey::FocusNext { backwards: false })),

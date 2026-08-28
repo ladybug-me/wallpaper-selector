@@ -335,7 +335,7 @@ fn non_design_tab_fades_scene() {
     app.scene.viewport = (1280.0, 720.0);
     let mut now = Instant::now();
     let _ = update(&mut app, Message::ToggleSettings);
-    let _ = update(&mut app, Message::SetSettingsTab(String::from("general")));
+    let _ = update(&mut app, Message::SetSettingsTab(String::from("picker")));
     tick_frames(&mut app, &mut now, 600);
     assert!(app.panels.settings.open);
     assert_eq!(app.scene.render.vis, 0.0);

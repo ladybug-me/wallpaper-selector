@@ -854,13 +854,9 @@ pub(super) fn settings_commit(app: &mut App) -> Task<Message> {
     }
 }
 
-pub(super) fn set_settings_tab(app: &mut App, mut tab: String) -> Task<Message> {
+pub(super) fn set_settings_tab(app: &mut App, tab: String) -> Task<Message> {
     commit_settings_input_edit(app);
     close_settings_search(app);
-    let canonical = crate::frontend::settings::canonical_category(&tab);
-    if canonical != tab {
-        tab = canonical.to_string();
-    }
     let changed = app.panels.settings.tab != tab;
     app.panels.settings.tab = tab;
     app.panels.settings.section = 0;

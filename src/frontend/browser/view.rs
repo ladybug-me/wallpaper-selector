@@ -186,7 +186,8 @@ fn source_tabs<'a>(
         .height(Length::Fixed(48.0 * scale))
         .padding(Padding::from([7.0 * scale, 5.0 * scale]))
         .on_press_maybe(
-            (enabled && !selected).then(|| Message::Update(BrowserMsg::SwitchSource(entry.source))),
+            (enabled && !selected)
+                .then_some(Message::Update(BrowserMsg::SwitchSource(entry.source))),
         )
         .style(move |_theme, state| {
             crate::frontend::ui::folio_button_style(selected, false, pal, state)

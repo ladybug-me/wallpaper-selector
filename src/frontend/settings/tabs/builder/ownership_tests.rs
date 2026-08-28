@@ -114,31 +114,6 @@ fn controls_owned_once() {
 }
 
 #[test]
-fn legacy_index_resolves() {
-    for legacy in [
-        "general",
-        "launch",
-        "selector",
-        "filter",
-        "paper",
-        "transitions",
-        "schedule",
-        "paths",
-        "postprocessing",
-        "keybinds",
-        "wallhaven",
-        "steam",
-        "wallpaper-engine",
-        "tagging",
-        "matugen",
-        "niri",
-    ] {
-        let canonical = crate::frontend::settings::canonical_category(legacy);
-        assert!(TABS.contains(&canonical), "{legacy} -> {canonical}");
-    }
-}
-
-#[test]
 fn controls_match_schema() {
     let configs = [
         FakeSettingsSource::default(),

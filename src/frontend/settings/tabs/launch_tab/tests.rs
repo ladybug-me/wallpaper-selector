@@ -13,7 +13,7 @@ fn launch_tab_builds() {
             |(key, label)| *key == "motion" && *label == crate::i18n::tr("settings-tab-motion")
         )
     );
-    let cards = build_tab("launch", &cfg, &[], &[], "", &[]);
+    let cards = build_tab("motion", &cfg, &[], &[], "", &[]);
     let rows =
         cards.iter().find(|(card, _)| card.title == "Launch").map_or(0, |(_, rows)| rows.len());
     assert!(rows >= 3);

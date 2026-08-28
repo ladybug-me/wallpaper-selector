@@ -54,12 +54,12 @@ pub(super) fn motion_speed_options() -> [(&'static str, &'static str); 3] {
 
 pub fn is_picker_layout_section(tab: &str, section: usize) -> bool {
     const LAYOUT_AND_PRESETS: usize = 1;
-    super::canonical_category(tab) == "picker" && section == LAYOUT_AND_PRESETS
+    tab == "picker" && section == LAYOUT_AND_PRESETS
 }
 
 pub fn is_transition_preview_section(tab: &str, section: usize) -> bool {
     const WALLPAPER_TRANSITIONS: usize = 3;
-    super::canonical_category(tab) == "motion" && section == WALLPAPER_TRANSITIONS
+    tab == "motion" && section == WALLPAPER_TRANSITIONS
 }
 
 pub(super) const MODES: [&str; 4] = ["slices", "hex", "wall", "sandy"];

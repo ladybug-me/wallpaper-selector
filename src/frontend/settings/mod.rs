@@ -1,6 +1,5 @@
 mod action;
 mod builder;
-mod compatibility;
 mod folio;
 mod input_ids;
 mod layout;
@@ -12,7 +11,6 @@ mod tabs;
 pub(crate) mod test_source;
 
 pub use action::{ActionId, SettingsFocus, SettingsKey, SettingsMsg};
-pub use compatibility::canonical_category;
 pub use folio::{
     ChromeCtx, FocusCtx, KeybindCaptureView, SourceCtx, WorkbenchInput, picker_layout_workbench,
     settings_workbench,

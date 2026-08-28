@@ -142,7 +142,7 @@ fn niri_unified_section() {
 fn monitor_choices_detected() {
     let cfg = FakeSettingsSource::default().with_text("monitor", "DP-9");
     let cards = build_tab_with_outputs(
-        "general",
+        "picker",
         &cfg,
         &[],
         &[],
@@ -160,7 +160,7 @@ fn monitor_choices_detected() {
             }
             _ => None,
         })
-        .expect("general settings expose picker monitor choices");
+        .expect("picker settings expose monitor choices");
     assert_eq!(
         options,
         [
@@ -375,7 +375,7 @@ fn motion_weights_resets() {
 
 #[test]
 fn selector_no_shader_modes() {
-    let cards = build_tab("selector", &cfg(), &[], &[], "", &[]);
+    let cards = build_tab("picker", &cfg(), &[], &[], "", &[]);
     for (_, rows) in &cards {
         for row in rows {
             if let Control::Dropdown { path, options, .. } = &row.control {
@@ -704,7 +704,7 @@ fn selector_flip_controls() {
 #[test]
 fn transition_style_section() {
     let cfg = FakeSettingsSource::default().with_text(keys::transition::SHADER, "sand-helix");
-    let cards = build_tab("transitions", &cfg, &[], &[], "", &[]);
+    let cards = build_tab("motion", &cfg, &[], &[], "", &[]);
     assert_eq!(
         cards.iter().map(|(card, _)| card.title).collect::<Vec<_>>(),
         [
@@ -905,7 +905,7 @@ fn search_single_index() {
             .iter()
             .any(|(key, label)| *key == "search" && *label == "Search and tags")
     );
-    let cards = build_tab("tagging", &cfg, &[], &[], "Tagging 3/10", &[]);
+    let cards = build_tab("search", &cfg, &[], &[], "Tagging 3/10", &[]);
     assert_eq!(cards.len(), 2);
     assert_eq!(cards[0].0.title, "Search");
     assert_eq!(cards[1].0.title, "Semantic models");
