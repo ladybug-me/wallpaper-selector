@@ -42,10 +42,7 @@ Item {
         id: _preheatTimer
         interval: 120
         repeat: false
-        onTriggered: {
-            if (cell.itemData && cell.itemData.path)
-                DaemonClient.preheat(cell.itemData.path)
-        }
+        onTriggered: {}
     }
 
     x: cellData ? cellData.bbox.x : 0
@@ -114,7 +111,7 @@ Item {
         cache: true
         asynchronous: true
         smooth: true
-        source: cell.itemData && cell.itemData.thumb ? ImageService.fileUrl(cell.itemData.thumb) : ""
+        source: cell.itemData && cell.itemData.thumb ? "file://" + cell.itemData.thumb : ""
         sourceSize.width: cell._decodeW
         sourceSize.height: cell._decodeH
         visible: false

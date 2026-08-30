@@ -420,7 +420,7 @@ Item {
                     var n = mosaicView.service.filteredModel.count
                     if (n <= 0) return ""
                     var item = mosaicView.service.filteredModel.get(index % n)
-                    return item && item.thumb ? ImageService.fileUrl(item.thumb) : ""
+                    return item && item.thumb ? "file://" + item.thumb : ""
                 }
                 sourceSize.width: ImageService.thumbWidth
                 sourceSize.height: ImageService.thumbHeight

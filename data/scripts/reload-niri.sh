@@ -1,5 +1,5 @@
 #!/bin/sh
-CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/skwd-wall"
+CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/caelestia/plugins/wallpaper-selector"
 COLOR=$(cat "$CACHE/niri-primary-color" 2>/dev/null | tr -d '[:space:]')
 [ -z "$COLOR" ] && exit 0
 

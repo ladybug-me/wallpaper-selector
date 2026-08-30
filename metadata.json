@@ -1,0 +1,11 @@
+{
+  "id": "wallpaper-selector",
+  "name": "Wallpaper Selector",
+  "description": "Wallpaper selector for Caelestia shell.",
+  "type": "quickshell",
+  "version": "1.0.0",
+  "author": {
+    "name": "Community"
+  },
+  "icon": "wallpaper"
+}

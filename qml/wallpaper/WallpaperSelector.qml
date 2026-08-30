@@ -15,8 +15,7 @@ Scope {
   property bool showing: false
   property alias selectedColorFilter: service.selectedColorFilter
   property alias selectorService: service
-  property alias swService: swService
-  property alias _whService: whService
+
   property string mainMonitor: Config.mainMonitor
   signal wallpaperChanged()
   signal uiReady()
@@ -53,26 +52,11 @@ Scope {
     if (service.filteredModel.count > 0)
       sliceListView.positionViewAtIndex(0, ListView.Center)
   }
-  WallhavenService {
-    id: whService
-    wallpaperDir: Config.wallpaperDir
-    apiKey: Config.wallhavenApiKey
-  }
 
-  SteamWorkshopService {
-    id: swService
-    weDir: Config.weDir
-    apiKey: Config.steamApiKey
-  }
   WallpaperSelectorService {
     id: service
-    scriptsDir: Config.scriptsDir
-    homeDir: Config.homeDir
-    wallpaperDir: Config.wallpaperDir
-    videoDir: Config.videoDir
-    cacheBaseDir: Config.cacheDir
-    weDir: Config.weDir
-    weAssetsDir: Config.weAssetsDir
+
+
     showing: wallpaperSelector.showing
     onModelUpdated: {
       if (wallpaperSelector.showing && !wallpaperSelector.cardVisible) {
@@ -446,10 +430,21 @@ Scope {
       steamWorkshopBrowserOpen: wallpaperSelector.steamWorkshopBrowserOpen
       tagCloudOpen: wallpaperSelector.tagCloudVisible
       weatherFilterActive: service.weatherFilterActive
-      onSettingsToggled: { wallpaperSelector.effectsOpen = false; wallpaperSelector.settingsOpen = !wallpaperSelector.settingsOpen; if (!wallpaperSelector.settingsOpen) wallpaperSelector._focusActiveList() }
-      onEffectsToggled: { wallpaperSelector.settingsOpen = false; wallpaperSelector.effectsOpen = !wallpaperSelector.effectsOpen; if (!wallpaperSelector.effectsOpen) wallpaperSelector._focusActiveList() }
-      onWallhavenToggled: { wallpaperSelector.settingsOpen = false; wallpaperSelector.steamWorkshopBrowserOpen = false; wallpaperSelector.wallhavenBrowserOpen = !wallpaperSelector.wallhavenBrowserOpen }
-      onSteamWorkshopToggled: { wallpaperSelector.settingsOpen = false; wallpaperSelector.wallhavenBrowserOpen = false; wallpaperSelector.steamWorkshopBrowserOpen = !wallpaperSelector.steamWorkshopBrowserOpen }
+      onSettingsToggled: {
+        Quickshell.execDetached(["caelestia", "toggle", "nexus"])
+        wallpaperSelector.showing = false
+      }
+      onEffectsToggled: {
+        Quickshell.execDetached(["caelestia", "toggle", "nexus"])
+        wallpaperSelector.showing = false
+      }
+      onWallhavenToggled: {
+        Quickshell.execDetached(["caelestia", "toggle", "nexus"])
+        wallpaperSelector.showing = false
+      }
+      onSteamWorkshopToggled: {
+        wallpaperSelector.showing = false
+      }
       onTagCloudToggled: {
         wallpaperSelector.tagCloudVisible = !wallpaperSelector.tagCloudVisible
         if (!wallpaperSelector.tagCloudVisible)
@@ -517,54 +512,7 @@ Scope {
     }
   }
 
-    Loader {
-      id: settingsLoader
-      active: true
-      asynchronous: true
-      anchors.horizontalCenter: parent.horizontalCenter
-      y: Math.max(8, cardContainer.y + filterBarBg.y - height - 8)
-      z: 999
-      sourceComponent: Component {
-        SettingsPanel {
-          colors: wallpaperSelector.colors
-          service: wallpaperSelector.selectorService
-          settingsOpen: wallpaperSelector.settingsOpen
-          onCloseRequested: { wallpaperSelector.settingsOpen = false; wallpaperSelector._focusActiveList() }
-          onThemeChanged: function(scheme, mode, colorIndex) {
-            console.log("WallpaperSelector: themeChanged scheme=" + scheme + " mode=" + mode + " colorIndex=" + colorIndex)
-            DaemonClient.retheme(scheme, mode, (typeof colorIndex === "number") ? colorIndex : Config.matugenColorIndex)
-          }
-        }
-      }
-    }
-    Loader {
-      id: effectsLoader
-      active: wallpaperSelector.effectsOpen
-      anchors.fill: parent
-      z: 999
-      sourceComponent: Component {
-        Item {
-          anchors.fill: parent
 
-          Rectangle {
-            anchors.fill: parent
-            color: Qt.rgba(0, 0, 0, 0.55)
-            MouseArea {
-              anchors.fill: parent
-              onClicked: { wallpaperSelector.effectsOpen = false; wallpaperSelector._focusActiveList() }
-            }
-          }
-
-          EffectsPanel {
-            anchors.centerIn: parent
-            colors: wallpaperSelector.colors
-            effectsOpen: wallpaperSelector.effectsOpen
-            selectedPath: wallpaperSelector._currentSelectedPath
-            onCloseRequested: { wallpaperSelector.effectsOpen = false; wallpaperSelector._focusActiveList() }
-          }
-        }
-      }
-    }
     Loader {
       id: tagCloudLoader
       active: wallpaperSelector.tagCloudVisible
@@ -587,39 +535,7 @@ Scope {
       }
     }
 
-    Loader {
-      id: whBrowserLoader
-      active: wallpaperSelector.wallhavenBrowserOpen
-      anchors.centerIn: parent
-      width: cardContainer.width - 20
-      z: 6
-      sourceComponent: Component {
-        WallhavenBrowser {
-          width: parent ? parent.width : 0
-          colors: wallpaperSelector.colors
-          whService: wallpaperSelector._whService
-          browserVisible: true
-          onEscapePressed: { wallpaperSelector.wallhavenBrowserOpen = false; wallpaperSelector._focusActiveList() }
-        }
-      }
-    }
 
-    Loader {
-      id: swBrowserLoader
-      active: wallpaperSelector.steamWorkshopBrowserOpen
-      anchors.centerIn: parent
-      width: cardContainer.width - 20
-      z: 6
-      sourceComponent: Component {
-        SteamWorkshopBrowser {
-          width: parent ? parent.width : 0
-          colors: wallpaperSelector.colors
-          swService: wallpaperSelector.swService
-          browserVisible: true
-          onEscapePressed: { wallpaperSelector.steamWorkshopBrowserOpen = false; wallpaperSelector._focusActiveList() }
-        }
-      }
-    }
     ListView {
       id: sliceListView
 
@@ -1309,7 +1225,7 @@ Scope {
           Image {
             id: gridThumbImg
             anchors.fill: parent
-            source: gridThumbDelegate.model.thumb ? ImageService.fileUrl(gridThumbDelegate.model.thumb) : ""
+            source: gridThumbDelegate.model.thumb ? "file://" + gridThumbDelegate.model.thumb : ""
             fillMode: Image.PreserveAspectCrop
             asynchronous: true
             smooth: true
@@ -1329,7 +1245,7 @@ Scope {
 
               sourceComponent: Video {
                   anchors.fill: parent
-                  source: ImageService.fileUrl(gridThumbDelegate.videoPath)
+                  source: "file://" + gridThumbDelegate.videoPath
                   fillMode: VideoOutput.PreserveAspectCrop
                   loops: MediaPlayer.Infinite
                   muted: true
@@ -1499,24 +1415,12 @@ Scope {
 
       onOverlayOpenChanged: {
         if (overlayOpen && overlayData && overlayData.type !== "we") {
-          var key = ImageService.thumbKey(overlayData.thumb, overlayData.name)
-          _gridMeta = FileMetadataService.getMetadata(key)
-          if (!_gridMeta)
-            FileMetadataService.probeIfNeeded(key, overlayData.path, overlayData.type === "video" ? "video" : "image")
+          var key = ""
+          _gridMeta = null
         }
         if (wallpaperSelector.selectorService) {
           if (overlayOpen) wallpaperSelector.selectorService.beginTagsEdit()
           else wallpaperSelector.selectorService.endTagsEdit()
-        }
-      }
-      Connections {
-        target: FileMetadataService
-        enabled: gridBackOverlay.overlayOpen
-        function onMetadataReady(key) {
-          if (!gridBackOverlay.overlayData) return
-          var myKey = ImageService.thumbKey(gridBackOverlay.overlayData.thumb, gridBackOverlay.overlayData.name)
-          if (key === myKey)
-            gridBackOverlay._gridMeta = FileMetadataService.getMetadata(key)
         }
       }
 
@@ -1634,7 +1538,7 @@ Scope {
             Image {
               anchors.fill: parent
               source: gridBackOverlay.overlayData && gridBackOverlay.overlayData.thumb
-                ? ImageService.fileUrl(gridBackOverlay.overlayData.thumb) : ""
+                ? "file://" + gridBackOverlay.overlayData.thumb : ""
               fillMode: Image.PreserveAspectCrop
               smooth: true; asynchronous: true; cache: false
               sourceSize.width: gridBackOverlay.bigW
@@ -1675,7 +1579,7 @@ Scope {
             Image {
               anchors.fill: parent
               source: gridBackOverlay.overlayData && gridBackOverlay.overlayData.thumb
-                ? ImageService.fileUrl(gridBackOverlay.overlayData.thumb) : ""
+                ? "file://" + gridBackOverlay.overlayData.thumb : ""
               fillMode: Image.PreserveAspectCrop; opacity: 0.08
               sourceSize.width: 120
               sourceSize.height: 68
@@ -1701,7 +1605,7 @@ Scope {
                 spacing: 0
                 visible: gridBackOverlay.overlayData && gridBackOverlay.overlayData.type !== "we"
                 Text {
-                  text: gridBackOverlay.overlayData ? FileMetadataService.formatExt(gridBackOverlay.overlayData.name) : ""
+                  text: gridBackOverlay.overlayData ? (gridBackOverlay.overlayData.name.substring(gridBackOverlay.overlayData.name.lastIndexOf(".") + 1).toUpperCase()) : ""
                   color: wallpaperSelector.colors ? Qt.rgba(wallpaperSelector.colors.tertiary.r, wallpaperSelector.colors.tertiary.g, wallpaperSelector.colors.tertiary.b, 0.6) : Qt.rgba(1,1,1,0.35)
                   font.family: Style.fontFamily; font.pixelSize: 11; font.weight: Font.Medium; font.letterSpacing: 0.8
                 }
@@ -1717,7 +1621,7 @@ Scope {
                   text: "  \u2022  "; color: Qt.rgba(1,1,1,0.15); font.family: Style.fontFamily; font.pixelSize: 11
                 }
                 Text {
-                  text: gridBackOverlay._gridMeta ? FileMetadataService.formatSize(gridBackOverlay._gridMeta.filesize) : "\u2013"
+                  text: gridBackOverlay._gridMeta ? "-" : "\u2013"
                   color: wallpaperSelector.colors ? Qt.rgba(wallpaperSelector.colors.tertiary.r, wallpaperSelector.colors.tertiary.g, wallpaperSelector.colors.tertiary.b, 0.6) : Qt.rgba(1,1,1,0.35)
                   font.family: Style.fontFamily; font.pixelSize: 11; font.weight: Font.Medium; font.letterSpacing: 0.5
                 }
@@ -1901,7 +1805,7 @@ Scope {
                   if (!gridBackOverlay.overlayOpen) return []
                   var db = wallpaperSelector.selectorService ? wallpaperSelector.selectorService.tagsDb : null
                   if (!db) return []
-                  var key = gridTagsSection.wpWeId ? gridTagsSection.wpWeId : ImageService.thumbKey(gridBackOverlay.overlayData ? gridBackOverlay.overlayData.thumb : "", gridTagsSection.wpName)
+                  var key = gridTagsSection.wpWeId ? gridTagsSection.wpWeId : ""
                   return db[key] || []
                 }
 
@@ -1936,7 +1840,7 @@ Scope {
                   width: gridActionRow._slotWidth
                   colors: wallpaperSelector.colors
                   icon: "\u{f0208}"; label: "VIEW"
-                  onClicked: { if (!gridBackOverlay.overlayData) return; var p = gridBackOverlay.overlayData.path; Qt.openUrlExternally(ImageService.fileUrl(p.substring(0, p.lastIndexOf("/")))); gridBackOverlay.hide() }
+                  onClicked: { if (!gridBackOverlay.overlayData) return; var p = gridBackOverlay.overlayData.path; Qt.openUrlExternally("file://" + p.substring(0, p.lastIndexOf("/"))); gridBackOverlay.hide() }
                 }
 
                 RetagButton {
@@ -1944,7 +1848,7 @@ Scope {
                   colors: wallpaperSelector.colors
                   wpKey: !gridBackOverlay.overlayData ? "" : ((gridBackOverlay.overlayData.weId || "")
                     ? gridBackOverlay.overlayData.weId
-                    : ImageService.thumbKey(gridBackOverlay.overlayData.thumb || "", gridBackOverlay.overlayData.name || ""))
+                    : "")
                   hasTags: gridTagsSection.currentTags.length > 0
                   onRetagStarted: gridTagsSection._retagging = true
                 }
@@ -1997,26 +1901,15 @@ Scope {
 
       onOverlayOpenChanged: {
         if (overlayOpen && overlayData && overlayData.type !== "we") {
-          var key = ImageService.thumbKey(overlayData.thumb, overlayData.name)
-          _hexMeta = FileMetadataService.getMetadata(key)
-          if (!_hexMeta)
-            FileMetadataService.probeIfNeeded(key, overlayData.path, overlayData.type === "video" ? "video" : "image")
+          var key = ""
+          _hexMeta = null
         }
         if (wallpaperSelector.selectorService) {
           if (overlayOpen) wallpaperSelector.selectorService.beginTagsEdit()
           else wallpaperSelector.selectorService.endTagsEdit()
         }
       }
-      Connections {
-        target: FileMetadataService
-        enabled: hexBackOverlay.overlayOpen
-        function onMetadataReady(key) {
-          if (!hexBackOverlay.overlayData) return
-          var myKey = ImageService.thumbKey(hexBackOverlay.overlayData.thumb, hexBackOverlay.overlayData.name)
-          if (key === myKey)
-            hexBackOverlay._hexMeta = FileMetadataService.getMetadata(key)
-        }
-      }
+
       readonly property real bigW: bigR * 2
       readonly property real bigH: Math.ceil(bigR * 1.73205)
       readonly property real _cos30: 0.866025
@@ -2160,7 +2053,7 @@ Scope {
             Image {
               anchors.fill: parent
               source: hexBackOverlay.overlayData && hexBackOverlay.overlayData.thumb
-                ? ImageService.fileUrl(hexBackOverlay.overlayData.thumb) : ""
+                ? "file://" + hexBackOverlay.overlayData.thumb : ""
               fillMode: Image.PreserveAspectCrop
               smooth: true
               asynchronous: true; cache: false
@@ -2215,7 +2108,7 @@ Scope {
             Image {
               anchors.fill: parent
               source: hexBackOverlay.overlayData && hexBackOverlay.overlayData.thumb
-                ? ImageService.fileUrl(hexBackOverlay.overlayData.thumb) : ""
+                ? "file://" + hexBackOverlay.overlayData.thumb : ""
               fillMode: Image.PreserveAspectCrop; opacity: 0.08
               sourceSize.width: 120
               sourceSize.height: 104
@@ -2241,7 +2134,7 @@ Scope {
                 spacing: 0
                 visible: hexBackOverlay.overlayData && hexBackOverlay.overlayData.type !== "we"
                 Text {
-                  text: hexBackOverlay.overlayData ? FileMetadataService.formatExt(hexBackOverlay.overlayData.name) : ""
+                  text: hexBackOverlay.overlayData ? (hexBackOverlay.overlayData.name.substring(hexBackOverlay.overlayData.name.lastIndexOf(".") + 1).toUpperCase()) : ""
                   color: wallpaperSelector.colors ? Qt.rgba(wallpaperSelector.colors.tertiary.r, wallpaperSelector.colors.tertiary.g, wallpaperSelector.colors.tertiary.b, 0.6) : Qt.rgba(1,1,1,0.35)
                   font.family: Style.fontFamily; font.pixelSize: 11; font.weight: Font.Medium; font.letterSpacing: 0.8
                 }
@@ -2257,7 +2150,7 @@ Scope {
                   text: "  \u2022  "; color: Qt.rgba(1,1,1,0.15); font.family: Style.fontFamily; font.pixelSize: 11
                 }
                 Text {
-                  text: hexBackOverlay._hexMeta ? FileMetadataService.formatSize(hexBackOverlay._hexMeta.filesize) : "\u2013"
+                  text: hexBackOverlay._hexMeta ? "-" : "\u2013"
                   color: wallpaperSelector.colors ? Qt.rgba(wallpaperSelector.colors.tertiary.r, wallpaperSelector.colors.tertiary.g, wallpaperSelector.colors.tertiary.b, 0.6) : Qt.rgba(1,1,1,0.35)
                   font.family: Style.fontFamily; font.pixelSize: 11; font.weight: Font.Medium; font.letterSpacing: 0.5
                 }
@@ -2441,7 +2334,7 @@ Scope {
                   if (!hexBackOverlay.overlayOpen) return []
                   var db = wallpaperSelector.selectorService ? wallpaperSelector.selectorService.tagsDb : null
                   if (!db) return []
-                  var key = overlayTagsSection.wpWeId ? overlayTagsSection.wpWeId : ImageService.thumbKey(hexBackOverlay.overlayData ? hexBackOverlay.overlayData.thumb : "", overlayTagsSection.wpName)
+                  var key = overlayTagsSection.wpWeId ? overlayTagsSection.wpWeId : ""
                   return db[key] || []
                 }
 
@@ -2476,7 +2369,7 @@ Scope {
                   width: overlayActionRow._slotWidth
                   colors: wallpaperSelector.colors
                   icon: "\u{f0208}"; label: "VIEW"
-                  onClicked: { if (!hexBackOverlay.overlayData) return; var p = hexBackOverlay.overlayData.path; Qt.openUrlExternally(ImageService.fileUrl(p.substring(0, p.lastIndexOf("/")))); hexBackOverlay.hide() }
+                  onClicked: { if (!hexBackOverlay.overlayData) return; var p = hexBackOverlay.overlayData.path; Qt.openUrlExternally("file://" + p.substring(0, p.lastIndexOf("/"))); hexBackOverlay.hide() }
                 }
 
                 RetagButton {
@@ -2484,7 +2377,7 @@ Scope {
                   colors: wallpaperSelector.colors
                   wpKey: !hexBackOverlay.overlayData ? "" : ((hexBackOverlay.overlayData.weId || "")
                     ? hexBackOverlay.overlayData.weId
-                    : ImageService.thumbKey(hexBackOverlay.overlayData.thumb || "", hexBackOverlay.overlayData.name || ""))
+                    : "")
                   hasTags: overlayTagsSection.currentTags.length > 0
                   onRetagStarted: overlayTagsSection._retagging = true
                 }

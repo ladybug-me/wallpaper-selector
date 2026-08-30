@@ -113,21 +113,32 @@ ShellRoot {
         function onShowingChanged() {
             if (!wallpaperSelectorLoader.item) return
             if (!wallpaperSelectorLoader.item.showing)
-                Qt.quit()
+                wallpaperSelectorLoader.active = false
         }
     }
 
     IpcHandler {
         target: "wallpaper-ui"
 
+        function toggle() {
+            if (wallpaperSelectorLoader.item) {
+                wallpaperSelectorLoader.item.showing = !wallpaperSelectorLoader.item.showing
+            } else {
+                wallpaperSelectorLoader.active = true
+            }
+        }
+        
+        function open() {
+            if (wallpaperSelectorLoader.item) {
+                wallpaperSelectorLoader.item.showing = true
+            } else {
+                wallpaperSelectorLoader.active = true
+            }
+        }
+
         function refresh() {
             if (wallpaperSelectorLoader.item && wallpaperSelectorLoader.item.selectorService)
                 wallpaperSelectorLoader.item.selectorService.refreshFromDb()
-        }
-
-        function steamUpdate() {
-            if (wallpaperSelectorLoader.item && wallpaperSelectorLoader.item.swService)
-                wallpaperSelectorLoader.item.swService.refreshDownloadStatus()
         }
     }
 }

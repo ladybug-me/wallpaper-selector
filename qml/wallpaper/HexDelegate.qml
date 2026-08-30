@@ -107,7 +107,7 @@ Item {
                 height: hexItem.height * 1.3
                 x: (hexItem.width - width) / 2 + hexItem.parallaxX
                 y: (hexItem.height - height) / 2 + hexItem.parallaxY
-                source: hexItem.itemData && hexItem.itemData.thumb ? ImageService.fileUrl(hexItem.itemData.thumb) : ""
+                source: hexItem.itemData && hexItem.itemData.thumb ? "file://" + hexItem.itemData.thumb : ""
                 fillMode: Image.PreserveAspectCrop
                 smooth: true
                 asynchronous: true
@@ -138,7 +138,7 @@ Item {
 
         sourceComponent: Video {
             anchors.fill: parent
-            source: ImageService.fileUrl(hexItem.videoPath)
+            source: "file://" + hexItem.videoPath
             fillMode: VideoOutput.PreserveAspectCrop
             loops: MediaPlayer.Infinite
             muted: true

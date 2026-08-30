@@ -13,7 +13,7 @@ QtObject {
 
     readonly property string homeDir: Quickshell.env("HOME")
     readonly property string configDir: Quickshell.env("SKWD_WALL_CONFIG")
-        || (Quickshell.env("XDG_CONFIG_HOME") || (homeDir + "/.config")) + "/skwd-wall"
+        || (Quickshell.env("XDG_CONFIG_HOME") || (homeDir + "/.config")) + "/caelestia/plugins/wallpaper-selector"
     readonly property string installDir: Quickshell.env("SKWD_WALL_INSTALL")
         || configDir
 
@@ -56,13 +56,13 @@ QtObject {
         preload: true
     }
 
-    readonly property string runtimeDir: (Quickshell.env("XDG_RUNTIME_DIR") || "/tmp") + "/skwd-wall"
+    readonly property string runtimeDir: (Quickshell.env("XDG_RUNTIME_DIR") || "/tmp") + "/caelestia/plugins/wallpaper-selector"
 
     readonly property string scriptsDir: _resolve(_data.paths?.scripts) || (installDir + "/scripts")
     readonly property string templateDir: _resolve(_data.paths?.templates) || (installDir + "/data/matugen/templates")
     readonly property string cacheDir: _resolve(_data.paths?.cache)
         || Quickshell.env("SKWD_WALL_CACHE")
-        || (Quickshell.env("XDG_CACHE_HOME") || (homeDir + "/.cache")) + "/skwd-wall"
+        || (Quickshell.env("XDG_CACHE_HOME") || (homeDir + "/.cache")) + "/caelestia/plugins/wallpaper-selector"
     readonly property string wallpaperDir: _resolve(_data.paths?.wallpaper)
         || (homeDir + "/Pictures/Wallpapers")
     readonly property string videoDir: _resolve(_data.paths?.videoWallpaper)

@@ -31,17 +31,15 @@ Item {
         interval: 120
         repeat: false
         onTriggered: {
-            if (delegateItem.model && delegateItem.model.path)
-                DaemonClient.preheat(delegateItem.model.path)
+            
         }
     }
 
     onFlippedChanged: {
         if (flipped && delegateItem.model.type !== "we") {
-            var key = ImageService.thumbKey(delegateItem.model.thumb, delegateItem.model.name)
-            _backMeta = FileMetadataService.getMetadata(key)
-            if (!_backMeta)
-                FileMetadataService.probeIfNeeded(key, delegateItem.model.path, delegateItem.model.type === "video" ? "video" : "image")
+            var key = ""
+            _backMeta = null
+            _backMeta = null
         }
         if (!flipped) {
             addTagField._syncing = true; addTagField.text = ""; addTagField._sessionTags = []; addTagField._syncing = false
@@ -58,15 +56,7 @@ Item {
         
         if (flipped && delegateItem.service) delegateItem.service.endTagsEdit()
     }
-    Connections {
-        target: FileMetadataService
-        enabled: delegateItem.flipped
-        function onMetadataReady(key) {
-            var myKey = ImageService.thumbKey(delegateItem.model.thumb, delegateItem.model.name)
-            if (key === myKey)
-                delegateItem._backMeta = FileMetadataService.getMetadata(key)
-        }
-    }
+
 
     readonly property real _skAbs: Math.abs(skewOffset)
     readonly property real _topLeft: skewOffset >= 0 ? _skAbs : 0
@@ -171,7 +161,7 @@ Item {
 
         sourceComponent: Video {
             anchors.fill: parent
-            source: ImageService.fileUrl(delegateItem.videoPath)
+            source: "file://" + delegateItem.videoPath
             fillMode: VideoOutput.PreserveAspectCrop
             loops: MediaPlayer.Infinite
             muted: true
@@ -259,7 +249,7 @@ Item {
         Image {
             id: thumbImage
             anchors.fill: parent
-            source: delegateItem.model.thumb ? ImageService.fileUrl(delegateItem.model.thumb) : ""
+            source: delegateItem.model.thumb ? "file://" + delegateItem.model.thumb : ""
             fillMode: Image.PreserveAspectCrop
             smooth: true
             asynchronous: true
@@ -436,7 +426,7 @@ Item {
 
             Image {
                 anchors.fill: parent
-                source: ImageService.fileUrl(delegateItem.model.thumb)
+                source: "file://" + delegateItem.model.thumb
                 fillMode: Image.PreserveAspectCrop
                 opacity: 0.12
                 visible: !(delegateItem.videoActive && delegateItem.flipped)
@@ -474,7 +464,7 @@ Item {
                     layoutDirection: Qt.LeftToRight
 
                     Text {
-                        text: FileMetadataService.formatExt(delegateItem.model.name)
+                        text: (delegateItem.model.name.substring(delegateItem.model.name.lastIndexOf(".") + 1).toUpperCase())
                         color: delegateItem.colors ? Qt.rgba(delegateItem.colors.tertiary.r, delegateItem.colors.tertiary.g, delegateItem.colors.tertiary.b, 0.6) : Qt.rgba(1,1,1,0.35)
                         font.family: Style.fontFamily; font.pixelSize: 10; font.weight: Font.Medium; font.letterSpacing: 0.8
                     }
@@ -494,7 +484,7 @@ Item {
                         font.family: Style.fontFamily; font.pixelSize: 10
                     }
                     Text {
-                        text: delegateItem._backMeta ? FileMetadataService.formatSize(delegateItem._backMeta.filesize) : "\u2013"
+                        text: delegateItem._backMeta ? "-" : "\u2013"
                         color: delegateItem.colors ? Qt.rgba(delegateItem.colors.tertiary.r, delegateItem.colors.tertiary.g, delegateItem.colors.tertiary.b, 0.6) : Qt.rgba(1,1,1,0.35)
                         font.family: Style.fontFamily; font.pixelSize: 10; font.weight: Font.Medium; font.letterSpacing: 0.5
                     }
@@ -695,7 +685,7 @@ Item {
                         if (!db) return []
                         var key = backTagsSection.wpWeId
                             ? backTagsSection.wpWeId
-                            : ImageService.thumbKey(backTagsSection.wpThumb, backTagsSection.wpName)
+                            : ""
                         return db[key] || []
                     }
 
@@ -739,7 +729,7 @@ Item {
                         skew: Math.abs(delegateItem.skewOffset) * 0.4
                         onClicked: {
                             var dir = delegateItem.model.path.substring(0, delegateItem.model.path.lastIndexOf("/"))
-                            Qt.openUrlExternally(ImageService.fileUrl(dir))
+                            Qt.openUrlExternally("file://" + dir)
                             delegateItem.flipped = false
                         }
                     }
@@ -750,7 +740,7 @@ Item {
                         skew: Math.abs(delegateItem.skewOffset) * 0.4
                         wpKey: backTagsSection.wpWeId
                             ? backTagsSection.wpWeId
-                            : ImageService.thumbKey(backTagsSection.wpThumb, backTagsSection.wpName)
+                            : ""
                         hasTags: backTagsSection.currentTags.length > 0
                         onRetagStarted: backTagsSection._retagging = true
                     }

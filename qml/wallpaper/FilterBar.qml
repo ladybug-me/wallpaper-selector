@@ -853,17 +853,6 @@ Item {
             }
         }
 
-        FilterButton {
-            visible: Config.ollamaEnabled
-            colors: filterBar.colors
-            label: "O"
-            tooltip: filterBar.ollamaActive ? "Stop Ollama scan" : "Start Ollama scan"
-            isActive: filterBar.ollamaActive
-            onClicked: {
-                if (filterBar.ollamaActive) WallpaperAnalysisService.stop()
-                else WallpaperAnalysisService.start()
-            }
-        }
     }
     }
 }
