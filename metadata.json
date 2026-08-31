@@ -1,0 +1,15 @@
+{
+  "id": "caelestia-kde-plugins-wallpaper-selector",
+  "name": "Wallpaper Selector",
+  "description": "Wallpaper selector for Caelestia shell",
+  "icon": "default",
+  "version": "1.0.0",
+  "type": "quickshell",
+  "author": {
+    "name": "liixini"
+  },
+  "license": "GPL-3.0-or-later",
+  "shell-compat": {
+    "min": "2.3"
+  }
+}

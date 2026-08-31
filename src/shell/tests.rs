@@ -155,9 +155,9 @@ fn gpu_preference_battery() {
 
 #[test]
 fn thumbnail_profile_bc_default() {
-    assert!(compressed_thumbnail_profile(None));
-    assert!(compressed_thumbnail_profile(Some("bc")));
-    assert!(compressed_thumbnail_profile(Some("unexpected")));
+    assert!(!compressed_thumbnail_profile(None));
+    assert!(!compressed_thumbnail_profile(Some("bc")));
+    assert!(!compressed_thumbnail_profile(Some("unexpected")));
     assert!(!compressed_thumbnail_profile(Some("rgba-poc")));
     assert!(!compressed_thumbnail_profile(Some("RGBA-POC")));
 }

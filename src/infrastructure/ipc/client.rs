@@ -1,13 +1,13 @@
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 
 use futures_channel::mpsc::UnboundedSender;
-use log::{debug, info, warn};
+use log::{debug, info};
 use serde_json::Value;
 
-use crate::infrastructure::executable;
+
 use crate::infrastructure::runtime::Wake;
 
 #[derive(Debug, Clone)]
@@ -30,6 +30,34 @@ impl IpcHandle {
         Self { next_id: Arc::new(AtomicU64::new(1)), tx: Arc::new(Mutex::new(None)) }
     }
 
+    fn get_wallpapers_json() -> serde_json::Value {
+        let mut wallpapers = Vec::new();
+        if let Some(mut path) = dirs::picture_dir() {
+            path.push("Wallpapers");
+            if let Ok(entries) = std::fs::read_dir(path) {
+                for entry in entries.flatten() {
+                    if let Ok(file_type) = entry.file_type() {
+                        if file_type.is_file() {
+                            let name = entry.file_name().to_string_lossy().into_owned();
+                            let abs_path = entry.path().to_string_lossy().into_owned();
+                            let lower = name.to_lowercase();
+                            if lower.ends_with(".png") || lower.ends_with(".jpg") || lower.ends_with(".jpeg") || lower.ends_with(".webp") || lower.ends_with(".gif") {
+                                wallpapers.push(serde_json::json!({
+                                    "name": name,
+                                    "key": abs_path,
+                                    "path": abs_path,
+                                    "type": "static",
+                                    "thumb": abs_path,
+                                }));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        serde_json::json!({ "schema_version": 1, "wallpapers": wallpapers })
+    }
+
     #[cfg_attr(test, allow(dead_code))]
     pub fn start(tx: UnboundedSender<Wake>) -> Self {
         let handle = Self { next_id: Arc::new(AtomicU64::new(1)), tx: Arc::new(Mutex::new(Some(tx.clone()))) };
@@ -39,7 +67,7 @@ impl IpcHandle {
         
         let _ = tx.unbounded_send(Wake::Ipc(IpcMsg::Response {
             id: list_id,
-            result: Some(serde_json::json!([])),
+            result: Some(Self::get_wallpapers_json()),
             error: None,
         }));
         
@@ -105,11 +133,19 @@ impl IpcHandle {
             "subscribe" | "wall.outputs" | "task.status" | "wall.list" | "effects.list" 
             | "theme.backends" | "playlist.list" | "playlist.update" | "playlist.create" 
             | "playlist.assign" | "playlist.delete" | "wall.set_audio" | "wall.update_tags" 
-            | "optimize.start" | "wall.shell_preview" | "wall.shell_preview_end" | "wall.retheme" => {
+            | "optimize.start" | "wall.shell_preview" | "wall.shell_preview_end" | "wall.retheme" | "status" => {
                 let result = if method == "wall.outputs" {
-                    serde_json::json!([{"name": "*", "id": "*"}])
+                    serde_json::json!({ "schema_version": 1, "outputs": [{"name": "*", "id": "*"}] })
+                } else if method == "wall.list" {
+                    Self::get_wallpapers_json()
+                } else if method == "effects.list" {
+                    serde_json::json!({ "schema_version": 1, "effects": [] })
                 } else if method.ends_with(".list") || method == "theme.backends" {
-                    serde_json::json!([])
+                    serde_json::json!({ "schema_version": 1, "items": [] })
+                } else if method == "theme.preview" {
+                    serde_json::json!({ "schema_version": 1, "colors": [] })
+                } else if method == "status" {
+                    serde_json::json!({ "version": env!("CARGO_PKG_VERSION") })
                 } else {
                     serde_json::json!({})
                 };

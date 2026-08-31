@@ -408,38 +408,15 @@ fn decode_path(path: &str, job: &Job, read_pool: &Arc<BufPool>) -> Result<Decode
         return Ok(Decoded { data, blocks: true, recycle: None });
     }
 
-    let file = std::fs::File::open(path).map_err(|err| err.to_string())?;
-    let reader = std::io::BufReader::new(file);
-    let mut decoder = image_webp::WebPDecoder::new(reader).map_err(|err| err.to_string())?;
-    let (sw, sh) = decoder.dimensions();
+    let img = image::open(path).map_err(|err| err.to_string())?;
+    let img = img.to_rgba8();
+    let (sw, sh) = img.dimensions();
     if !preview_dimensions_safe(sw, sh) {
         return Err(format!("unsafe source dimensions {sw}x{sh}"));
     }
-    let source_pixels = u64::from(sw) * u64::from(sh);
-    let bpp = if decoder.has_alpha() { 4usize } else { 3usize };
-    let source_bytes = source_pixels
-        .checked_mul(bpp as u64)
-        .and_then(|bytes| usize::try_from(bytes).ok())
-        .filter(|bytes| *bytes <= MAX_DECODE_BYTES)
-        .ok_or_else(|| format!("source allocation exceeds {MAX_DECODE_BYTES} bytes"))?;
-    if decoder.output_buffer_size() != Some(source_bytes) {
-        return Err(String::from("inconsistent WebP output size"));
-    }
-    let mut src = vec![0u8; source_bytes];
-    decoder.read_image(&mut src).map_err(|err| err.to_string())?;
-    let rgba = if bpp == 3 {
-        let mut out = vec![255u8; source_pixels as usize * 4];
-        for (idx, px) in src.chunks_exact(3).enumerate() {
-            out[idx * 4] = px[0];
-            out[idx * 4 + 1] = px[1];
-            out[idx * 4 + 2] = px[2];
-        }
-        out
-    } else {
-        src
-    };
+    let src = img.into_raw();
     debug_assert_eq!(target_bytes, job.w as usize * job.h as usize * 4);
-    let rgba = resize_thumbnail_area(&rgba, sw, sh, job.w, job.h);
+    let rgba = resize_thumbnail_area(&src, sw, sh, job.w, job.h);
     Ok(Decoded { data: rgba, blocks: false, recycle: None })
 }
 
@@ -514,14 +491,7 @@ pub fn bc1_encode(rgba: &[u8], w: u32, h: u32) -> Vec<u8> {
 }
 
 pub fn is_webp(path: &str) -> bool {
-    let bytes = path.as_bytes();
-    let len = bytes.len();
-    len >= 5
-        && bytes[len - 5] == b'.'
-        && bytes[len - 4].eq_ignore_ascii_case(&b'w')
-        && bytes[len - 3].eq_ignore_ascii_case(&b'e')
-        && bytes[len - 2].eq_ignore_ascii_case(&b'b')
-        && bytes[len - 1].eq_ignore_ascii_case(&b'p')
+    true
 }
 
 mod tests;

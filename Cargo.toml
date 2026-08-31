@@ -57,6 +57,7 @@ tracing-subscriber = { workspace = true, optional = true }
 tracing-tracy = { workspace = true, optional = true }
 tracing-chrome = { workspace = true, optional = true }
 dhat = { workspace = true, optional = true }
+dirs = "6.0.0"
 
 
 [features]

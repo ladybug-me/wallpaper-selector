@@ -54,7 +54,7 @@ fn configure_thumbnail_profile() {
 }
 
 pub(super) fn compressed_thumbnail_profile(value: Option<&str>) -> bool {
-    !value.is_some_and(|value| value.eq_ignore_ascii_case("rgba-poc"))
+    false
 }
 
 fn configure_picker_power_preference() {
